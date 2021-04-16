@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: orders
+Transform:
+- AWS::Serverless-2016-10-31
+Resources:
+  handleEventsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/built/handlers/handle-event.handleEventsHandler
+      Runtime: nodejs12.x
+      CodeUri: handleEventsFunction
+      DeadLetterQueue: null
+      Description: Function that handles events from EventBus
+      MemorySize: 128
+      Timeout: 100
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: PaymentsTable
+      - EventBridgePutEventsPolicy:
+          EventBusName: CoffeeServiceEventBus
+      Environment:
+        Variables:
+          DYNAMODB_TABLE:
+            Ref: PaymentsTable
+          EVENT_BUS: CoffeeServiceEventBus
+      Events:
+        HandlePaymentEventsRule:
+          Type: EventBridgeRule
+          Properties:
+            EventBusName: CoffeeServiceEventBus
+            Pattern:
+              source:
+              - CoffeeService.orders
+  PaymentsTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: order_id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2

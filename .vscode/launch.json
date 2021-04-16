@@ -1,0 +1,66 @@
+{
+  "configurations": [
+    {
+      "type": "aws-sam",
+      "request": "direct-invoke",
+      "name": "payments:handlePaymentFunction",
+      "invokeTarget": {
+        "target": "template",
+        "templatePath": "payments/template.yml",
+        "logicalId": "handlePaymentFunction"
+      },
+      "lambda": {
+        "payload": {},
+        "environmentVariables": {}
+      }
+    },
+    {
+      "type": "aws-sam",
+      "request": "direct-invoke",
+      "name": "API payments:handlePaymentFunction",
+      "invokeTarget": {
+        "target": "api",
+        "templatePath": "payments/template.yml",
+        "logicalId": "handlePaymentFunction"
+      },
+      "api": {
+        "path": "/",
+        "httpMethod": "get",
+        "payload": {
+          "json": {}
+        }
+      }
+    },
+    {
+      "type": "aws-sam",
+      "request": "direct-invoke",
+      "name": "orders:handleEventFunction",
+      "invokeTarget": {
+        "target": "template",
+        "templatePath": "orders/template.yml",
+        "logicalId": "handleEventFunction"
+      },
+      "lambda": {
+        "payload": {},
+        "environmentVariables": {}
+      }
+    },
+    {
+      "type": "aws-sam",
+      "request": "direct-invoke",
+      "name": "API orders:putOrderFunction",
+      "invokeTarget": {
+        "target": "api",
+        "templatePath": "orders/template.yml",
+        "logicalId": "putOrderFunction"
+      },
+      "api": {
+        "path": "/",
+        "httpMethod": "get",
+        "payload": {
+          "json": {}
+        }
+      }
+    }
+  ]
+}

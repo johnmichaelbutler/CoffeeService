@@ -1,0 +1,24 @@
+{
+    "name": "orders",
+    "description": "orders microservice for CoffeeService",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.6.1",
+        "@aws-sdk/client-eventbridge": "^3.6.1",
+        "aws-sdk": "^2.874.0"
+    },
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.72",
+        "@types/node": "^14.14.31",
+        "jest": "^26.6.3"
+    },
+    "scripts": {
+        "compile": "tsc",
+        "build": "sam build",
+        "deploy": "tsc && sam build && sam deploy",
+        "local": "tsc && sam build",
+        "local-put": "tsc && sam build && sam local invoke \"putOrderFunction\" -e events/event-put-order.json",
+        "local-event": "tsc && sam build && sam local invoke \"handleEventFunction\" -e events/event-event.json"
+    }
+}

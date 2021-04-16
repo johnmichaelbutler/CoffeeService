@@ -1,0 +1,19 @@
+{
+  "version": "0",
+  "id": "b1c6b71d-e5c8-7e7f-0f12-b23b3ff12753",
+  "detail-type": "order_created",
+  "source": "CoffeeService.orders",
+  "account": "812961115575",
+  "time": "2021-03-28T14:00:41Z",
+  "region": "us-east-2",
+  "resources": [],
+  "detail": {
+      "order_id": "101",
+      "status": "awaiting:payment",
+      "price": "101.00",
+      "name": "John",
+      "items": {
+          "coffee": "3"
+      }
+  }
+}
