@@ -63,7 +63,8 @@ function CartPage() {
     else {
       console.log('Creating order');
       try {
-        await doRequest();
+        const res = await doRequest();
+        console.log(res);
         router.push('/checkout');
       } catch (error) {
         console.log('Error sending request', error);

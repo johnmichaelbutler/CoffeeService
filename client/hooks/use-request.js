@@ -15,13 +15,24 @@ const useRequest = ({ path, method, body, onSuccess, currentUser }) => {
     }
   });
 
+  console.log({instance})
+
   if(currentUser) {
     doRequest = async ( props = {}) => {
       try {
         setErrors(null);
-        const response = await instance[method](path, {...body, ...props});
+        const config = {
+          url: path,
+          method: method,
+          ...body,
+          ...props
+        };
+        const response = await instance(config);
+        console.log('Response from use-request/doRequest', response);
+        // const response = await instance[method](path, {...body, ...props});
         if(onSuccess) {
-          onSuccess(response.data);
+          // onSuccess(response.data);
+          onSuccess(response);
         };
         return response.data;
       } catch (error) {

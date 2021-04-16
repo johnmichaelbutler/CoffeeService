@@ -20,13 +20,13 @@ const bindMiddleware = (middleware) => {
 const makeStore = ({isServer}) => {
   if(isServer) {
     // If it's on server side, create a store
-    return createStore(cartReducer, bindMiddleware([]));
+    return createStore(rootReducer, bindMiddleware([]));
   } else {
     // If it's on client side, create a store which will persist
     const persistConfig = {
       key: 'root', // At what point in our reducer do we want to start storing everything
       storage,
-      whitelist: ['cart', 'user'] // List of reducers we want persisted
+      whitelist: ['cart', 'user', 'order'] // List of reducers we want persisted
     };
 
     const persistedReducer = persistReducer(persistConfig, rootReducer); // Create reducer with existing reducer
