@@ -13,7 +13,6 @@ const docClient = new dynamodb.DocumentClient();
 const eventBridgeClient = new EventBridgeClient({region: 'us-east-2'});
 
 const tableName = process.env.DYNAMODB_TABLE;
-console.log('Name of dynamodb table',tableName);
 const eventBus = process.env.EVENT_BUS;
 
 if(tableName == undefined) {
@@ -24,13 +23,13 @@ if(eventBus == undefined) {
 }
 
 const updateDB = async (eventBody: Order) => {
-  const {order_id, status, price, name } = eventBody;
+  const {order_id, total, name } = eventBody;
 
   let order: Order = {
     order_id: order_id,
     status: OrderStatus.AwaitingPayment,
     name: name,
-    price: price
+    total: total
   };
 
   const ddbParams: DynamoDBOrderParams = {
@@ -98,8 +97,8 @@ exports.handleEventsHandler = async (event: any) => {
   console.log(`Event from payments/handleEventsHandler ${JSON.stringify(event)}`);
   const body = event.detail;
   console.log(body)
-  const { order_id, status, price, name } = body;
-  console.log('Body from EventBridge', order_id, status, price, name);
+  const { order_id, status, total, name } = body;
+  console.log('Body from EventBridge', order_id, status, total, name);
 
   if(status == 'created') {
     // Save to Database, where status is updated to 'awaiting_payment'
@@ -109,8 +108,5 @@ exports.handleEventsHandler = async (event: any) => {
     // Send Event which updates other services order status to 'awaiting_payment'
     const eventResponse = await publishAwaitPaymentEvent(body);
     console.log(`EventBridge Response: ${eventResponse}`);
-
-
   }
-
 }

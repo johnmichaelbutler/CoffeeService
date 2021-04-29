@@ -4,6 +4,15 @@ Description: >-
 Transform:
 - AWS::Serverless-2016-10-31
 Resources:
+  coffeeServiceApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Dev
+      Cors:
+        AllowHeaders: "'*'"
+        AllowMethods: "'*'"
+        AllowOrigin: "'*'"
+
   putOrderFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -28,6 +37,7 @@ Resources:
           Properties:
             Path: /
             Method: POST
+            RestApiId: !Ref coffeeServiceApi
 
   handleEventFunction:
     Type: AWS::Serverless::Function
@@ -76,8 +86,9 @@ Resources:
 Outputs:
   WebEndpoint:
     Description: "API Gateway endpoint URL for Prod stage"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Value: !Sub "https://${coffeeServiceApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
   CSEventBus:
     Description: "Event bus for Coffee Service"
     Value: !Ref CoffeeServiceEventBus
-  
+    Export:
+      Name: CSEventBus

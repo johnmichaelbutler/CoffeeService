@@ -10,7 +10,6 @@ const OrderStatusEnum_1 = __importDefault(require("../enums/OrderStatusEnum"));
 const docClient = new dynamodb_1.default.DocumentClient();
 const eventBridgeClient = new client_eventbridge_1.EventBridgeClient({ region: 'us-east-2' });
 const tableName = process.env.DYNAMODB_TABLE;
-console.log('Name of dynamodb table', tableName);
 const eventBus = process.env.EVENT_BUS;
 if (tableName == undefined) {
     throw new Error('Table name must be defined!');
@@ -19,12 +18,12 @@ if (eventBus == undefined) {
     throw new Error('Event Bus must be defined!');
 }
 const updateDB = async (eventBody) => {
-    const { order_id, status, price, name } = eventBody;
+    const { order_id, total, name } = eventBody;
     let order = {
         order_id: order_id,
         status: OrderStatusEnum_1.default.AwaitingPayment,
         name: name,
-        price: price
+        total: total
     };
     const ddbParams = {
         TableName: tableName,
@@ -87,8 +86,8 @@ exports.handleEventsHandler = async (event) => {
     console.log(`Event from payments/handleEventsHandler ${JSON.stringify(event)}`);
     const body = event.detail;
     console.log(body);
-    const { order_id, status, price, name } = body;
-    console.log('Body from EventBridge', order_id, status, price, name);
+    const { order_id, status, total, name } = body;
+    console.log('Body from EventBridge', order_id, status, total, name);
     if (status == 'created') {
         // Save to Database, where status is updated to 'awaiting_payment'
         const dbResponse = await updateDB(body);

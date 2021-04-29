@@ -4,13 +4,14 @@ import { EventBridgeClient, PutEventsCommand, PutEventsCommandInput, PutPartnerE
 import dynamodb from 'aws-sdk/clients/dynamodb';
 import {Order, DynamoDBOrderParam} from '../interfaces/OrderInterface';
 import { APIGatewayProxyEvent } from 'aws-lambda';
+import makeOrderId from '../services/order_id';
+import OrderStatus from '../enums/OrderStatusEnum';
 
 const docClient = new dynamodb.DocumentClient();
 
 const eventBridgeClient = new EventBridgeClient({region: 'us-east-2'});
 
 const tableName = process.env.DYNAMODB_TABLE;
-console.log(`Name of Order DynamoDB Table: ${tableName}`)
 const eventBus = process.env.EVENT_BUS;
 
 if(tableName == undefined) {
@@ -21,14 +22,15 @@ if(eventBus == undefined) {
 }
 
 const saveOrderToDB = async (eventBody: Order) => {
-  const { order_id, status, items, price, name } = eventBody;
+  const { items, total, name, user_id, status } = eventBody;
 
   let order: Order = {
-    order_id: order_id,
-    status: status,
-    name: name,
-    items: items,
-    price: price,
+    order_id: makeOrderId(),
+    status,
+    name,
+    user_id,
+    items,
+    total
   };
 
   let ddbParams: DynamoDBOrderParam = {
@@ -37,16 +39,17 @@ const saveOrderToDB = async (eventBody: Order) => {
   };
 
   const result = await docClient.put(ddbParams).promise();
+  console.log('result from saveOrderToDB', result);
 
   const response = {
     statusCode: 200,
-    body: JSON.stringify(result)
+    body: JSON.stringify(order)
   };
   return response;
 };
 
 const publishEventToEventBus = async (eventBody: Order) => {
-  const { order_id, status, items, price } = eventBody;
+  console.log('Input for publishEventToEventBus', eventBody);
 
   let eventBridgeParams = {
     Entries: [
@@ -77,9 +80,7 @@ const publishEventToEventBus = async (eventBody: Order) => {
     return response;
   }
 }
-/**
- * Creates an order and stores it to CoffeeService-Orders table
- */
+ // Creates an order and stores it to CoffeeService-Orders table
 exports.putOrderHandler = async (event: APIGatewayProxyEvent) => {
 	if (event.httpMethod !== 'POST') {
 		throw new Error(`postMethod only accepts POST method, you tried: ${event.httpMethod} method.`);
@@ -88,16 +89,28 @@ exports.putOrderHandler = async (event: APIGatewayProxyEvent) => {
 	console.info('received:', event);
 
 	// Get order information from body
-	const body = JSON.parse(event.body!)
+	let body = JSON.parse(event.body!)
+  let body_with_status: Order = {status: OrderStatus.Created, ...body};
 
-  const dbResponse = await saveOrderToDB(body);
+  const dbResponse = await saveOrderToDB(body_with_status);
   console.info(`response from: ${event.path} statusCode: ${dbResponse.statusCode} body: ${dbResponse.body}`);
 
-  const eventResponse = await publishEventToEventBus(body);
+  console.log('Starting putEvents action')
+  let event_body = JSON.parse(dbResponse.body);
+  const eventResponse = await publishEventToEventBus(event_body);
   console.info(`response from: ${event.path} statusCode: ${eventResponse.statusCode} body: ${eventResponse.body}`);
 
   // All log statements are written to CloudWatch
-  console.log('Starting putEvents action')
-  const response = `dbResponse, ${dbResponse}; eventResponse ${eventResponse}`;
+  console.log(`dbResponse, ${dbResponse}; eventResponse ${eventResponse}`);
+  let response = {
+    statusCode: 200,
+    headers: {
+      "Access-Control-Allow-Headers" : "*",
+      "Access-Control-Allow-Methods": "*",
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({eventResponse, dbResponse})
+  }
   return response;
 }

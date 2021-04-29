@@ -3,6 +3,20 @@
     {
       "type": "aws-sam",
       "request": "direct-invoke",
+      "name": "orders:putOrderFunction",
+      "invokeTarget": {
+        "target": "template",
+        "templatePath": "${workspaceFolder}/orders/template.yml",
+        "logicalId": "putOrderFunction"
+      },
+      "lambda": {
+        "payload": {},
+        "environmentVariables": {}
+      }
+    },
+    {
+      "type": "aws-sam",
+      "request": "direct-invoke",
       "name": "payments:handlePaymentFunction",
       "invokeTarget": {
         "target": "template",

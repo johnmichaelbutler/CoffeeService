@@ -3,7 +3,7 @@ export interface Order {
     order_id: string;
     name: string;
     status: OrderStatus;
-    price: string;
+    total: string;
 }
 export interface DynamoDBOrderParams {
     TableName: string;

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
 
-const useRequest = ({ path, method, body, onSuccess, currentUser }) => {
+const useRequest = ({ url, method, body, onSuccess, currentUser }) => {
   const [errors, setErrors ] = useState(null);
   let doRequest = () => console.log('No User');
 
@@ -15,21 +15,30 @@ const useRequest = ({ path, method, body, onSuccess, currentUser }) => {
     }
   });
 
-  console.log({instance})
+  const headers = {
+    "Access-Control-Allow-Headers" : "*",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "*"
+  };
+
+
+
+  // console.log({instance})
 
   if(currentUser) {
-    doRequest = async ( props = {}) => {
+    doRequest = async (props = {}) => {
       try {
-        setErrors(null);
-        const config = {
-          url: path,
-          method: method,
-          ...body,
-          ...props
-        };
-        const response = await instance(config);
-        console.log('Response from use-request/doRequest', response);
-        // const response = await instance[method](path, {...body, ...props});
+      //   setErrors(null);
+      //   const config = {
+      //     url: path,
+      //     method: method,
+      //     ...body,
+      //     ...props
+      //   };
+      //   const response = await instance(config);
+      //   console.log('Response from use-request/doRequest', response);
+        const response = await axios[method](url, {...body, headers, ...props});
+        console.log('Response from use-request', response);
         if(onSuccess) {
           // onSuccess(response.data);
           onSuccess(response);

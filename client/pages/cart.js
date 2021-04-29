@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import CheckoutItem from '../components/checkout-item';
 import { useRequest } from '../hooks/use-request';
 import CheckoutError from '../components/checkout-error';
@@ -7,15 +7,17 @@ import Link from 'next/link';
 import {useRouter} from 'next/router';
 
 function CartPage() {
-  const [orderId, setOrderId] = useState(null);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const currentUser = useSelector((state) => state.user.currentUser);
 
+  const orderId = useSelector((state)=> state.order.order_id)
   const name = useSelector((state) => currentUser ? state.user.currentUser.attributes.name : null);
   const username = useSelector((state) => currentUser ? state.user.currentUser.username : null);
   const cartItems = useSelector((state) => state.cart.cartItems);
   const total = useSelector((state) => state.cart.cartItems.reduce((accumulatedQuantity, cartItem) => accumulatedQuantity + cartItem.price * cartItem.quantity, 0));
+
+  const dispatch = useDispatch();
 
   const router = useRouter();
 
@@ -27,7 +29,7 @@ function CartPage() {
   });
 
   let { doRequest } = useRequest({
-    path: '/',
+    url: 'https://a2zlteclg0.execute-api.us-east-2.amazonaws.com/Dev/',
     method: 'post',
     body: {
       items,
@@ -37,7 +39,7 @@ function CartPage() {
     },
     onSuccess: (res) => {
       console.log(res);
-      setOrderId(res.id);
+      // setOrderId(res.id);
     },
     currentUser
   });
@@ -96,7 +98,11 @@ function CartPage() {
       ))}
       <div className="mt-8 ml-auto text-3xl">TOTAL: ${total.toFixed(2)}</div>
       <div className="relative">
-        {showError ? <CheckoutError errorMessage={errorMessage} setShowError={() => setShowError(false)} /> : null }
+        {showError ?
+          <CheckoutError errorMessage={errorMessage} setShowError={() => setShowError(false)} /> 
+          :
+          null
+        }
         <a className="bg-gray-300 rounded w-auto h-auto py-1 px-1" onClick={createOrder}>
           Checkout
         </a>

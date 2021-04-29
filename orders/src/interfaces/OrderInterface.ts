@@ -6,7 +6,7 @@ export interface Order {
   user_id: string,
   status: OrderStatus,
   items: {},
-  price: string
+  total: string
 }
 
 export interface DynamoDBOrderParam {
