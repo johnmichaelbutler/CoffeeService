@@ -5,21 +5,15 @@ import {AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
 import { useEffect } from 'react';
 import { setCurrentUser } from '../../redux/user/user.actions';
 import {useDispatch, useSelector} from 'react-redux';
+import { selectCurrentUser } from '../../redux/user/user.selector';
 
 
 const Index = () => {
   Amplify.configure({ ...awsExports, ssr: true });
-  const currentUser = useSelector(state => state.user.currentUser);
+
+  const currentUser = useSelector(selectCurrentUser);
+  const name = currentUser ? currentUser.attributes.name : null;
   const dispatch = useDispatch();
-
-  const name = useSelector((state) => {
-    if(currentUser) {
-      return state.user.currentUser.attributes.name
-    } else {
-      return null
-    }}
-  );
-
 
   useEffect(() => {
     return onAuthUIStateChange((nextAuthState, authData) => {

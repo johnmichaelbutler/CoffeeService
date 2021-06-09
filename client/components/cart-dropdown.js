@@ -1,12 +1,13 @@
 import React from 'react';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import {selectCartItems} from '../redux/cart/cart.selectors';
 import CartItem from './cart-item';
 import CustomButton from './custom-button';
 import { toggleCartHidden } from '../redux/cart/cart.actions';
 import Link from 'next/link';
 
 function CartDropdown() {
-  const cartItems = useSelector((state) => state.cart.cartItems)
+  const cartItems = useSelector(selectCartItems);
   const dispatch = useDispatch();
 
   return (

@@ -1,8 +1,6 @@
-import {useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import MENU_ITEMS from '../../../menu_items';
 import Link from 'next/link';
-import MenuItem from '../../../components/menu-item';
 import Image from 'next/image';
 
 export default function Category({category_items}) {

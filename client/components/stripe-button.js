@@ -1,11 +1,14 @@
 import { useSelector } from 'react-redux';
 import StripeCheckout from 'react-stripe-checkout';
 import { useRequest } from '../hooks/use-request';
+import {selectCartTotal} from '../redux/cart/cart.selectors';
+import {selectCurrentUser} from '../redux/user/user.selector';
+import {selectOrderId} from '../redux/order/order.selectors';
 
 const StripeCheckoutButton = () => {
-  const total = useSelector((state) => state.cart.cartItems.reduce((accumulatedQuantity, cartItem) => accumulatedQuantity + cartItem.price * cartItem.quantity, 0));
-  const order_id = useSelector((state) => state.order.order_id);
-  const currentUser = useSelector((state) => state.user.currentUser);
+  const total = useSelector(selectCartTotal);
+  const order_id = useSelector(selectOrderId);
+  const currentUser = useSelector(selectCurrentUser);
 
   const totalForStripe = total * 100;
   const publishableKey = 'pk_test_5uyEQjGOKix6ZbELqNtH7vu6003VbAEP1I';

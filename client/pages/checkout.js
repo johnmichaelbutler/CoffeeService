@@ -1,17 +1,16 @@
-import { useEffect } from 'react';
 import StripeCheckoutButton from '../components/stripe-button';
 import { useSelector } from 'react-redux';
-
+import {selectCurrentUser} from '../redux/user/user.selector';
 import { useRouter } from 'next/router';
 
 function CheckoutPage({ total, orderId }) {
-  const currentUser= useSelector((state) => state.user.currentUser);
+  const currentUser = useSelector(selectCurrentUser);
   const router = useRouter();
 
   if(!currentUser) {
     router.push('/');
   };
-  
+
   return (
     <div className="fixed pt-16">
       <div className="top-3">

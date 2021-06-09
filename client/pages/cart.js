@@ -4,19 +4,21 @@ import CheckoutItem from '../components/checkout-item';
 import { useRequest } from '../hooks/use-request';
 import CheckoutError from '../components/checkout-error';
 import CustomButton from '../components/custom-button'
-import Link from 'next/link';
 import {useRouter} from 'next/router';
+import {selectCurrentUser} from '../redux/user/user.selector';
+import {selectOrderId} from '../redux/order/order.selectors';
+import {selectCartItems, selectCartTotal} from '../redux/cart/cart.selectors';
 
 function CartPage() {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const currentUser = useSelector((state) => state.user.currentUser);
+  const currentUser = useSelector(selectCurrentUser);
 
-  const orderId = useSelector((state)=> state.order.order_id)
-  const name = useSelector((state) => currentUser ? state.user.currentUser.attributes.name : null);
-  const username = useSelector((state) => currentUser ? state.user.currentUser.username : null);
-  const cartItems = useSelector((state) => state.cart.cartItems);
-  const total = useSelector((state) => state.cart.cartItems.reduce((accumulatedQuantity, cartItem) => accumulatedQuantity + cartItem.price * cartItem.quantity, 0));
+  const orderId = useSelector(selectOrderId);
+  const name = currentUser ? currentUser.attributes.name : null;
+  const username = currentUser ? currentUser.username : null;
+  const cartItems = useSelector(selectCartItems);
+  const total = useSelector(selectCartTotal);
 
 
   const router = useRouter();

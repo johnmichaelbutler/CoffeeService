@@ -1,25 +1,19 @@
-import  {useEffect, useState} from 'react';
-import Amplify, {Auth} from 'aws-amplify';
-import awsExports from '../src/aws-exports';
-import {AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
+import {useState} from 'react';
 import Link from 'next/link';
 import CartIcon from './cart-icon';
 import { useSelector } from 'react-redux';
+import {selectCartHidden} from '../redux/cart/cart.selectors';
+import {selectCurrentUser} from '../redux/user/user.selector';
 import CartDropdown from './cart-dropdown';
 
 
 
 export default function Navbar() {
-  const [openMenu, setOpenMenu] = useState(true);
-  const hidden = useSelector((state) => state.cart.hidden);
-  const currentUser = useSelector((state) => state.user.currentUser);
 
-  const name = useSelector((state) => {
-    if(currentUser) {
-      return state.user.currentUser.attributes.name
-    } else {
-      return null
-    }});
+  const [openMenu, setOpenMenu] = useState(false);
+  const hidden = useSelector(selectCartHidden);
+  const currentUser = useSelector(selectCurrentUser);
+  const name = currentUser ? currentUser.attributes.name : null;
 
 
     const links = [
@@ -67,7 +61,6 @@ export default function Navbar() {
   };
 
   return (
-    // Later, add 'fixed' back
     <nav className="fixed z-50 w-full top-0 bg-default-background-opaque">
       <div className="relative max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         <div className="relative flex items-center justify-between h-16">

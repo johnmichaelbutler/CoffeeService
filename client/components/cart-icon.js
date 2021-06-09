@@ -1,10 +1,11 @@
 import  ShoppingIcon  from '../public/shopping-bag.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleCartHidden } from '../redux/cart/cart.actions';
+import { selectCartItemsCount } from '../redux/cart/cart.selectors';
 
 function CartIcon() {
   const dispatch = useDispatch();;
-  const itemCount = useSelector((state) => state.cart.cartItems.reduce((accumulatedQuantity, cartItem) => accumulatedQuantity + cartItem.quantity, 0));
+  const itemCount = useSelector(selectCartItemsCount);
 
   return (
     <div
