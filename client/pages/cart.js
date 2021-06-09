@@ -74,7 +74,7 @@ function CartPage() {
       }
     }
   };
-
+  
   return (
     <div className="pt-16 flex flex-col items-center w-3/4 min-h-full mt-12 mx-auto mb-0 text-center">
       <div className="w-full flex justify-between border-b-b-1 border-gray-700 py-3 px-0 text-center">
@@ -97,11 +97,11 @@ function CartPage() {
       {cartItems.map((cartItem) => (
         <CheckoutItem key={cartItem.id} cartItem={cartItem} />
       ))}
-      <div className="">
+      <div className="pb-20">
         <div className="text-3xl mt-8 ">
           TOTAL: ${total.toFixed(2)}
         </div>
-        <div className="">
+        <div className="mt-4">
           <CustomButton onClick={createOrder} >
             <a>Checkout</a>
           </CustomButton>
