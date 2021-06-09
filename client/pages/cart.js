@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import CheckoutItem from '../components/checkout-item';
 import { useRequest } from '../hooks/use-request';
 import CheckoutError from '../components/checkout-error';
+import CustomButton from '../components/custom-button'
 import Link from 'next/link';
 import {useRouter} from 'next/router';
 
@@ -75,37 +76,44 @@ function CartPage() {
   };
 
   return (
-    <div className="flex flex-col items-center w-3/4 min-h-full mt-12 mx-auto mb-0">
-      <div className="w-full flex justify-between border-b-b-1 border-gray-700 py-3 px-0">
+    <div className="pt-16 flex flex-col items-center w-3/4 min-h-full mt-12 mx-auto mb-0 text-center">
+      <div className="w-full flex justify-between border-b-b-1 border-gray-700 py-3 px-0 text-center">
         <div className="capitalize w-1/4">
-          <span>Product</span>
+          <span className="font-medium text-lg underline">Product</span>
         </div>
         <div className="capitalize w-1/4">
-          <span>Description</span>
+          <span className="font-medium text-lg underline">Description</span>
         </div>
         <div className="capitalize w-1/4">
-          <span>Quantity</span>
+          <span className="font-medium text-lg underline">Quantity</span>
         </div>
         <div className="capitalize w-1/4">
-          <span>Price</span>
+          <span className="font-medium text-lg underline">Price</span>
         </div>
         <div className="capitalize w-1/4">
-          <span>Remove</span>
+          <span className="font-medium text-lg underline">Remove</span>
         </div>
       </div>
       {cartItems.map((cartItem) => (
         <CheckoutItem key={cartItem.id} cartItem={cartItem} />
       ))}
-      <div className="mt-8 ml-auto text-3xl">TOTAL: ${total.toFixed(2)}</div>
+      <div className="">
+        <div className="text-3xl mt-8 ">
+          TOTAL: ${total.toFixed(2)}
+        </div>
+        <div className="">
+          <CustomButton onClick={createOrder} >
+            <a>Checkout</a>
+          </CustomButton>
+        </div>
+      </div>
       <div className="relative">
         {showError ?
-          <CheckoutError errorMessage={errorMessage} setShowError={() => setShowError(false)} /> 
+          <CheckoutError errorMessage={errorMessage} setShowError={() => setShowError(false)} />
           :
           null
         }
-        <a className="bg-gray-300 rounded w-auto h-auto py-1 px-1" onClick={createOrder}>
-          Checkout
-        </a>
+
       </div>
     </div>
   );

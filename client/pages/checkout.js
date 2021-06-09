@@ -13,7 +13,7 @@ function CheckoutPage({ total, orderId }) {
   };
   
   return (
-    <div className="fixed">
+    <div className="fixed pt-16">
       <div className="top-3">
         <p className="text-center mt-10 text-2xl text-red-600">
           *Please use the following test credit card for payment*

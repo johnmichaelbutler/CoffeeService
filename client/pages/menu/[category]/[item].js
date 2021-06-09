@@ -10,7 +10,7 @@ const Item = ({menu_item, addItem}) => {
   const {id, short_name, picture, name, price, description} = menu_item[0];
 
   return (
-    <div className="contain">
+    <div className="contain pt-16">
       <div className="flex  bg-gray-200 rounded">
         <div className=" ">
           <div className="flex-row text-center">

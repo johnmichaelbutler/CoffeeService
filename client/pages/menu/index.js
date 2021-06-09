@@ -14,7 +14,7 @@ export default function Menu() {
   })
 
   return (
-    <div>
+    <div className="pt-16">
       <h1>Menu Page</h1>
       <ul>{categories}</ul>
     </div>

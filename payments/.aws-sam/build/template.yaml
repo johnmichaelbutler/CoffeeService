@@ -3,6 +3,42 @@ Description: orders
 Transform:
 - AWS::Serverless-2016-10-31
 Resources:
+  coffeeServicePaymentApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Dev
+      Cors:
+        AllowHeaders: '''*'''
+        AllowMethods: '''*'''
+        AllowOrigin: '''*'''
+  handlePaymentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/built/handlers/handle-payment.handlePaymentHandler
+      Runtime: nodejs12.x
+      Description: Function that processes payment from Stripe
+      MemorySize: 128
+      Timeout: 100
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: PaymentsTable
+      - EventBridgePutEventsPolicy:
+          EventBusName: CoffeeServiceEventBus
+      Environment:
+        Variables:
+          DYNAMODB_TABLE:
+            Ref: PaymentsTable
+          EVENT_BUS: CoffeeServiceEventBus
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /payments
+            Method: POST
+            RestApiId:
+              Ref: coffeeServicePaymentApi
+      CodeUri: handlePaymentFunction
   handleEventsFunction:
     Type: AWS::Serverless::Function
     Properties:

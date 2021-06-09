@@ -6,6 +6,6 @@ codeuri = "."
 runtime = "nodejs12.x"
 source_md5 = ""
 packagetype = "Zip"
-functions = ["handleEventsFunction"]
+functions = ["handlePaymentFunction", "handleEventsFunction"]
 
 [layer_build_definitions]

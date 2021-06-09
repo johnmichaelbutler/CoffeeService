@@ -36,7 +36,7 @@ const Index = ({setCurrentUser}) => {
   });
 
   return  currentUser ? (
-    <div>
+    <div className="pt-16">
       <h1>Welcome, {name}</h1>
       <div className="w-10">
         <AmplifySignOut handleAuthStateChange={signOutAuthStateHandler}/>

@@ -68,7 +68,7 @@ export default function Navbar() {
 
   return (
     // Later, add 'fixed' back
-    <nav className=" z-50 w-full top-0 bg-default-background-opaque">
+    <nav className="fixed z-50 w-full top-0 bg-default-background-opaque">
       <div className="relative max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         <div className="relative flex items-center justify-between h-16">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">

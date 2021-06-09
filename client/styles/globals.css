@@ -19,6 +19,10 @@ a {
   box-sizing: border-box;
 }
 
+.filter-image {
+  filter: brightness(30%);
+}
+
 .contain {
   @apply px-12 md:px-32 lg:px-44 3xl:px-96 4xl:px-30rem;
 }
@@ -29,4 +33,8 @@ a {
 
 .mobile-nav-item {
   @apply text-gray-200 hover:underline hover:text-white uppercase;
+}
+
+.neg-z-index {
+  z-index: -1;
 }

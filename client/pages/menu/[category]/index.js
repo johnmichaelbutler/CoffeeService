@@ -25,7 +25,7 @@ export default function Category({category_items}) {
             className=""
             width="150"
             height="150"
-            layout="intrinsic"
+            layout="fixed"
           />
         </div>
       </div>
@@ -33,8 +33,8 @@ export default function Category({category_items}) {
   });
 
   return (
-    <div className="contain">
-      <div>Category:
+    <div className="pt-16 contain">
+      <div>
         <div className="grid grid-cols-2 gap-4">
           {items}
         </div>

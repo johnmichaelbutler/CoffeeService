@@ -19,14 +19,13 @@ function CartDropdown({ toggleCartHidden }) {
           <span className="text-lg mx-6 my-auto">Your cart is empty</span>
         )}
       </div>
-      <div className="flex mx-auto my-auto bg-gray-400">
-          <CustomButton onClick={toggleCartHidden}>
+      <div className="flex h-5.25rem w-full justify-center items-center align-middle">
+          <CustomButton onClick={toggleCartHidden} >
             <Link href="/cart">
               <a>GO TO CART</a>
             </Link>
           </CustomButton>
       </div>
-
     </div>
   );
 }

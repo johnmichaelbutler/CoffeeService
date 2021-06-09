@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import { wrapper } from '../redux/store';
-import Navbar from '../components/navbar';
+import Layout from './layout/layout';
 import {useStore} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import Amplify, { Auth } from 'aws-amplify';
@@ -15,10 +15,9 @@ function MyApp({ Component, pageProps }) {
   const store = useStore();
   return (
     <PersistGate persistor={store.__persistor} loading={<div>Loading</div>}>
-      <>
-        <Navbar />
+      <Layout>
         <Component {...pageProps} />
-      </>
+      </Layout>
     </PersistGate>
   )
 }

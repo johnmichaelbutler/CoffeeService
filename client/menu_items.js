@@ -7,7 +7,7 @@ export const MENU_ITEMS = [
         id: 'coffee',
         short_name: 'Coffee',
         picture: '/menu/brewed_coffee.jpg',
-        name: 'coffee',
+        name: 'Coffee',
         price: 0.75,
         description:
           'A smooth, well-balanced coffee with rich flavors of chocolate and toasted nuts. Brewed fresh for you.',
