@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import MENU_ITEMS from '../../../menu_items';
-import { connect, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {addItem} from '../../../redux/cart/cart.actions';
 import { wrapper } from '../../../redux/store';
 
+const Item = ({menu_item}) => {
 
-const Item = ({menu_item, addItem}) => {
-  console.log({menu_item});
   const {id, short_name, picture, name, price, description} = menu_item[0];
+  const dispatch = useDispatch();
 
   return (
     <div className="contain pt-16">
@@ -17,7 +17,7 @@ const Item = ({menu_item, addItem}) => {
           <h2 className="text-xl text-blue-900">{name}</h2>
           <p>{description}</p>
           <p>Price: ${price.toFixed(2)}</p>
-          <button className="bg-gray-500 rounded px-2 py-2 hover:bg-gray-400" onClick={() => addItem(menu_item[0])}>
+          <button className="bg-gray-500 rounded px-2 py-2 hover:bg-gray-400" onClick={() => dispatch(addItem(menu_item[0]))}>
             Add To Cart
           </button>
           </div>
@@ -34,12 +34,6 @@ const Item = ({menu_item, addItem}) => {
     </div>
   )
 };
-
-export const mapDispatchToProps = (dispatch) => {
-  return {
-    addItem: item => dispatch(addItem(item))
-  }
-}
 
 export const getStaticProps = wrapper.getStaticProps(async ({params, store}) => {
   // console.log(context)
@@ -82,4 +76,4 @@ export async function getStaticPaths() {
   }
 };
 
-export default connect(null, mapDispatchToProps)(Item);
+export default Item;

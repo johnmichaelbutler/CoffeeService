@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import CheckoutItem from '../components/checkout-item';
 import { useRequest } from '../hooks/use-request';
 import CheckoutError from '../components/checkout-error';
@@ -18,7 +18,6 @@ function CartPage() {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const total = useSelector((state) => state.cart.cartItems.reduce((accumulatedQuantity, cartItem) => accumulatedQuantity + cartItem.price * cartItem.quantity, 0));
 
-  const dispatch = useDispatch();
 
   const router = useRouter();
 

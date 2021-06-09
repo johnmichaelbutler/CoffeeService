@@ -10,6 +10,12 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
+:root {
+  --amplify-primary-color: rgba(55, 65, 81);
+  --amplify-primary-tint: rgba(55, 65, 81);
+  --amplify-primary-shade: rgba(55, 65, 81);
+}
+
 a {
   color: inherit;
   text-decoration: none;

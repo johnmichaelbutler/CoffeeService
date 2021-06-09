@@ -6,7 +6,8 @@ module.exports = {
       colors: {
         'mobile-nav-bg': 'rgba(51, 65, 85, 0.95)',
         'default-background': '#060606',
-        'default-background-opaque': 'rgba(6, 6, 6, 0.8)'
+        'default-background-opaque': 'rgba(6, 6, 6, 0.8)',
+        'gray-100-see-through': 'rgba(243, 244, 246, 0.8)'
       },
       inset: {
         '40px': '40px',
