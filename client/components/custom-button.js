@@ -1,4 +1,6 @@
-function CustomButton({ children, ...otherProps }) {
+import React from 'react';
+
+const CustomButton = React.forwardRef(({ children, ...otherProps }, ref) =>{
   return (
     <button
       className="
@@ -13,6 +15,6 @@ function CustomButton({ children, ...otherProps }) {
       {children}
     </button>
   );
-}
+});
 
 export default CustomButton;
