@@ -15,6 +15,9 @@ export default function Navbar() {
   const currentUser = useSelector(selectCurrentUser);
   const name = currentUser ? currentUser.attributes.name : null;
 
+  const handleOpenMenu = () => {
+    setOpenMenu(!openMenu);
+  };
 
     const links = [
       !currentUser && { label: 'menu', href: '/menu'},
@@ -55,10 +58,6 @@ export default function Navbar() {
         </div>
       )
     })
-
-  const handleOpenMenu = () => {
-    setOpenMenu(!openMenu);
-  };
 
   return (
     <nav className="fixed z-50 w-full top-0 bg-default-background-opaque">

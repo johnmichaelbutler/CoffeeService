@@ -35,11 +35,7 @@ const Item = ({menu_item}) => {
   )
 };
 
-export const getStaticProps = wrapper.getStaticProps(async ({params, store}) => {
-  // console.log(context)
-  // Redux
-  store.dispatch(addItem())
-  // Item Props
+export async function getStaticProps({params}) {
   const {item, category} = params;
 
   const category_items = MENU_ITEMS.filter(
@@ -59,7 +55,33 @@ export const getStaticProps = wrapper.getStaticProps(async ({params, store}) => 
       menu_item
     }
   }
-});
+};
+
+// export const getStaticProps = wrapper.getStaticProps(async ({params, store}) => {
+//   // console.log(context)
+//   // Redux
+//   store.dispatch(addItem())
+//   // Item Props
+//   const {item, category} = params;
+
+//   const category_items = MENU_ITEMS.filter(
+//     (categories) => categories.id === category
+//   );
+
+//   const menu_item = category_items[0].items.filter(
+//     (m_item) => {
+//       return (
+//         m_item.id == item
+//       )
+//     }
+//   );
+
+//   return {
+//     props: {
+//       menu_item
+//     }
+//   }
+// });
 
 export async function getStaticPaths() {
   return {
