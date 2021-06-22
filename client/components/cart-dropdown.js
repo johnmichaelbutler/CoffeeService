@@ -24,7 +24,7 @@ function CartDropdown() {
       <div className="flex h-5.25rem w-full justify-center items-center align-middle">
           <CustomButton onClick={() => dispatch(toggleCartHidden())} >
             <Link href="/cart">
-              <a>GO TO CART</a>
+              <a>CART</a>
             </Link>
           </CustomButton>
       </div>

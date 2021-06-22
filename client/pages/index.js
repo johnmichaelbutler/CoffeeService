@@ -21,12 +21,12 @@ export default function Home() {
           />
         </div>
         <div className="h-screen overflow-hidden">
-          <div className="mt-24 h-48 lg:h-60 w-1/2 lg:w-1/3 text-center bg-gray-100-see-through mx-auto my-auto">
+          <div className="mt-24 h-48 lg:h-60 w-10/12 lg:w-1/3 text-center bg-gray-100-see-through mx-auto my-auto">
             <h1 className="font-bold text-xl pt-10">Welcome to Coffee Service</h1>
             <div className="mt-5">
                 <Link href="/menu" passHref>
               <CustomButton>
-                  <a className="text-sm w-full h-full">See the Menu</a>
+                  <a className="">Menu</a>
               </CustomButton>
                 </Link>
             </div>
