@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import CheckoutItem from '../components/checkout-item';
 import { useRequest } from '../hooks/use-request';
 import CheckoutError from '../components/checkout-error';
@@ -8,12 +8,18 @@ import {useRouter} from 'next/router';
 import {selectCurrentUser} from '../redux/user/user.selector';
 import {selectOrderId} from '../redux/order/order.selectors';
 import {selectCartItems, selectCartTotal} from '../redux/cart/cart.selectors';
+import {updateOrderId} from '../redux/order/order.actions';
 
 function CartPage() {
+  // Used in case of error
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const currentUser = useSelector(selectCurrentUser);
 
+  // Redux Dispatch
+  const dispatch = useDispatch();
+
+  // Redux Selectors
+  const currentUser = useSelector(selectCurrentUser);
   const orderId = useSelector(selectOrderId);
   const name = currentUser ? currentUser.attributes.name : null;
   const username = currentUser ? currentUser.username : null;
@@ -40,8 +46,8 @@ function CartPage() {
       total,
     },
     onSuccess: (res) => {
-      console.log(res);
-      // setOrderId(res.id);
+      const {order_id} = JSON.parse(res.data.dbResponse.body)
+      dispatch(updateOrderId(order_id));
     },
     currentUser
   });
@@ -68,14 +74,13 @@ function CartPage() {
       console.log('Creating order');
       try {
         const res = await doRequest();
-        console.log(res);
         router.push('/checkout');
       } catch (error) {
         console.log('Error sending request', error);
       }
     }
   };
-  
+
   return (
     <div className="pt-16 flex flex-col items-center w-3/4 min-h-full mt-12 mx-auto mb-0 text-center">
       <div className="w-full flex justify-between border-b-b-1 border-gray-700 py-3 px-0 text-center">
@@ -114,7 +119,6 @@ function CartPage() {
           :
           null
         }
-
       </div>
     </div>
   );

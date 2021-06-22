@@ -95,13 +95,13 @@ export async function getStaticProps({params}) {
 export async function getStaticPaths() {
   return {
     paths: [
-      { params: { 'category': 'hot_coffee', 'item': 'coffee'}},
-      { params: { 'category': 'hot_coffee', 'item': 'espresso'}},
-      { params: { 'category': 'hot_coffee', 'item': 'latte'}},
-      { params: { 'category': 'hot_coffee', 'item': 'cappuccino'}},
-      { params: { 'category': 'hot_coffee', 'item': 'pour_over'}},
-      { params: { 'category': 'cold_coffee', 'item': 'cold_brew'}},
-      { params: { 'category': 'cold_coffee', 'item': 'iced_coffee'}},
+      { params: { 'category': 'hot_drinks', 'item': 'coffee'}},
+      { params: { 'category': 'hot_drinks', 'item': 'espresso'}},
+      { params: { 'category': 'hot_drinks', 'item': 'latte'}},
+      { params: { 'category': 'hot_drinks', 'item': 'cappuccino'}},
+      { params: { 'category': 'hot_drinks', 'item': 'pour_over'}},
+      { params: { 'category': 'cold_drinks', 'item': 'cold_brew'}},
+      { params: { 'category': 'cold_cdrinks', 'item': 'iced_coffee'}},
     ],
     fallback: true
   }

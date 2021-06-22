@@ -41,7 +41,7 @@ a {
 }
 
 .mobile-nav-item {
-  @apply text-gray-200 hover:underline hover:text-white uppercase;
+  @apply text-white uppercase text-lg tracking-widest ;
 }
 
 .neg-z-index {

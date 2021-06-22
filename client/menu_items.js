@@ -1,7 +1,7 @@
 export const MENU_ITEMS = [
   {
-    id: 'hot_coffee',
-    title: 'Hot Coffee',
+    id: 'hot_drinks',
+    title: 'Hot Drinks',
     items: [
       {
         id: 'coffee',
@@ -50,8 +50,8 @@ export const MENU_ITEMS = [
     ],
   },
   {
-    id: 'cold_coffee',
-    title: 'Cold Coffee',
+    id: 'cold_drinks',
+    title: 'Cold Drinks',
     items: [
       {
         id: 'cold_brew',

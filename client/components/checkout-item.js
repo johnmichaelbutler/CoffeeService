@@ -12,7 +12,7 @@ function CheckoutItem({ cartItem }) {
   const dispatch = useDispatch();
 
   return (
-    <div className="w-full flex min-h-100px border-b-1 border-gray-800 px-4 py-0 text-lg items-center justify-center">
+    <div className="w-full flex min-h-100px border-b-2 border-gray-300 py-2 font-light items-center justify-center">
       <div className="w-1/4">
         <Image
           src={picture}

@@ -1,10 +1,10 @@
 const CheckoutError = ({setShowError, errorMessage}) => {
   return (
-    <div className="z-10 w-40 h-32  -top-40 left-28 absolute rounded px-2 mb-12">
-      <div className="flex">
-        <span className="font-bold text-xl rounded cursor-pointer" onClick={setShowError}>X</span>
+    <div className="grid grid-cols-3 z-10 w-48 h-28  -top-40 left-20 absolute rounded px-2 mb-12">
+      <div className="col-span-1">
+        <div className="font-bold text-2xl rounded cursor-pointer justify-center content-center" onClick={setShowError}>X</div>
       </div>
-      <p className="font-bold text-xl text-red-600">{errorMessage}</p>
+      <p className="col-span-2 font-bold text-xl text-red-600">{errorMessage}</p>
     </div>
   )
 }

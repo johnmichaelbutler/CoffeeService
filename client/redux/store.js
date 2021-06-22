@@ -1,8 +1,17 @@
 
-import {createStore} from 'redux';
+import {createStore, applyMiddleware} from 'redux';
 import rootReducer from './root-reducer';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import logger from 'redux-logger';
 
-const store = createStore(rootReducer);
+const bindMiddleware = (middleware) => {
+  if(process.env.NODE_ENV === 'development') {
+    return composeWithDevTools(applyMiddleware(logger, ...middleware));
+  };
+  return applyMiddleware(...middleware);
+};
+
+const store = createStore(rootReducer, bindMiddleware([]));
 
 export default store;
 

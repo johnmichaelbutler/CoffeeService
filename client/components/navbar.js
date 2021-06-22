@@ -51,10 +51,12 @@ export default function Navbar() {
     .filter((linkConfig) => linkConfig)
     .map(({label, href}) => {
       return (
-        <div className="row-span-1" key={href}>
-          <Link href={href}>
-            <a onClick={handleOpenMenu} className="mobile-nav-item">{label}</a>
-          </Link>
+        <div className="row-span-1 hover:bg-gray-400 w-full h-full mx-auto my-auto pt-6 " key={href}>
+          <div className="w-full h-full hover:underline hover:text-black">
+            <Link href={href}>
+              <a onClick={handleOpenMenu} className="mobile-nav-item ">{label}</a>
+            </Link>
+          </div>
         </div>
       )
     })
@@ -105,9 +107,8 @@ export default function Navbar() {
       </div>
 
       {/* Mobile menu, toggle classNamees based on menu state. */}
-      <div className={`${openMenu ? '' : 'hidden'} sm:hidden h-2/5 w-full fixed z-10 bg-mobile-nav-bg text-md`}>
-        {/* Removed 'px-2 pt-2 pb-3 space-y-1 ' */}
-        <div className="w-full h-full grid grid-rows-4 text-center items-center">
+      <div className={`${openMenu ? '' : 'hidden'} sm:hidden h-2/5 w-full fixed z-10 bg-mobile-nav-bg `}>
+        <div className="w-full h-full grid grid-rows-3 text-center items-center hover:text-black">
           {mobileLinks}
         </div>
       </div>

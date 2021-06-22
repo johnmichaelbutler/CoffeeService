@@ -1,15 +1,19 @@
+import {useEffect} from 'react';
 import StripeCheckoutButton from '../components/stripe-button';
 import { useSelector } from 'react-redux';
 import {selectCurrentUser} from '../redux/user/user.selector';
 import { useRouter } from 'next/router';
 
-function CheckoutPage({ total, orderId }) {
+function CheckoutPage() {
   const currentUser = useSelector(selectCurrentUser);
   const router = useRouter();
 
-  if(!currentUser) {
-    router.push('/');
-  };
+  useEffect(() => {
+    if(!currentUser) {
+      router.push('/');
+    };
+  }, [])
+
 
   return (
     <div className="fixed pt-16">
@@ -19,7 +23,7 @@ function CheckoutPage({ total, orderId }) {
           <br />
           4242 4242 4242 4242 - Exp: 01/22 - CVV: 123
         </p>
-        <StripeCheckoutButton price={total} orderId={orderId} />
+        <StripeCheckoutButton />
       </div>
     </div>
   );

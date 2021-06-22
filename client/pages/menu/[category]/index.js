@@ -63,8 +63,8 @@ export async function getStaticProps(context) {
 export async function getStaticPaths() {
   return {
     paths: [
-      { params: { 'category': 'hot_coffee'}},
-      { params: { 'category': 'cold_coffee'}}
+      { params: { 'category': 'hot_drinks'}},
+      { params: { 'category': 'cold_drinks'}}
     ],
     fallback: true
   }
