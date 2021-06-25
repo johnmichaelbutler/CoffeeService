@@ -5,4 +5,5 @@ export interface Order {
   name: {S: string},
   status: {S: OrderStatus},
   total: {S: string}
+  user_id: {S: string}
 }

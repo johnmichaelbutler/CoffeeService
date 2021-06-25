@@ -12,4 +12,7 @@ export interface Order {
     total: {
         S: string;
     };
+    user_id: {
+        S: string;
+    };
 }
