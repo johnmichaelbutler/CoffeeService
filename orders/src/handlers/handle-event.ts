@@ -1,11 +1,9 @@
 import { Order } from '../interfaces/OrderInterface';
 import { Response } from '../interfaces/ResponseInterface';
-import OrderStatus  from '../enums/OrderStatusEnum';
 import { DynamoDBClient, UpdateItemCommand, UpdateItemCommandInput  } from "@aws-sdk/client-dynamodb";
 
 
 const tableName = process.env.DYNAMODB_TABLE;
-console.log('Table Name: ', tableName);
 const ddbClient = new DynamoDBClient({region: 'us-east-2'});
 
 const updateOrderStatus = async (body: Order) => {
@@ -31,7 +29,7 @@ const updateOrderStatus = async (body: Order) => {
   let response: Response;
   try {
     const dbResponse = await ddbClient.send(command);
-    console.log(`Response from Order DB Status Update: ${dbResponse}`)
+    console.log(`Response from Order DB Status Update: ${JSON.stringify(dbResponse)}`)
     response = {
       statusCode: 200,
       body: dbResponse
@@ -47,14 +45,14 @@ const updateOrderStatus = async (body: Order) => {
 }
 
 exports.handleEventHandler = async (event: any) => {
-  console.log(`Event from ${event.source}: ${event.detail["order_id"]["S"]} - ${event.detail["status"]["S"]}`);
+  console.log(`Event from ${event.source}: ${JSON.stringify(event)}`);
   const body = event.detail;
-  const {status} = body;
+  const status = body.status.S;
   console.log('Status: ', status);
 
   let response: Response;
 
-  if (status == OrderStatus.AwaitingPayment) {
+  if (event.source == "CoffeeService.payments") {
     const orderStatusResponse = await updateOrderStatus(body);
     response = orderStatusResponse;
     console.log(response);

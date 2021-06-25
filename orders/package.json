@@ -19,6 +19,6 @@
         "deploy": "tsc && sam build && sam deploy",
         "local": "tsc && sam build",
         "local-put": "tsc && sam build && sam local invoke \"putOrderFunction\" -e events/event-put-order.json",
-        "local-event": "tsc && sam build && sam local invoke \"handleEventFunction\" -e events/event-event.json"
+        "local-event": "tsc && sam local invoke \"handleEventFunction\" -e events/event-event.json -t template.yml --env-vars env.json -l eventbridge-logs.txt"
     }
 }

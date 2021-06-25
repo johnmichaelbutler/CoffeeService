@@ -21,14 +21,6 @@ const ddbClient = new client_dynamodb_1.DynamoDBClient({ region: 'us-east-2' });
 const saveOrderToDB = async (eventBody) => {
     console.log('Event body in saveOrderToDB', eventBody);
     const { items, total, name, userId, status } = eventBody;
-    // let order = {
-    //   order_id: makeOrderId(),
-    //   status: status,
-    //   name: name,
-    //   user_id: userId,
-    //   items: items[0],
-    //   total: total.toString()
-    // };
     let itemsForOrder = items.map((item) => {
         return {
             "M": {

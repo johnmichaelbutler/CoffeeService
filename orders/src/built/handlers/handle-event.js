@@ -1,12 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const OrderStatusEnum_1 = __importDefault(require("../enums/OrderStatusEnum"));
 const client_dynamodb_1 = require("@aws-sdk/client-dynamodb");
 const tableName = process.env.DYNAMODB_TABLE;
-console.log('Table Name: ', tableName);
 const ddbClient = new client_dynamodb_1.DynamoDBClient({ region: 'us-east-2' });
 const updateOrderStatus = async (body) => {
     const { order_id, status } = body;
@@ -31,7 +26,7 @@ const updateOrderStatus = async (body) => {
     let response;
     try {
         const dbResponse = await ddbClient.send(command);
-        console.log(`Response from Order DB Status Update: ${dbResponse}`);
+        console.log(`Response from Order DB Status Update: ${JSON.stringify(dbResponse)}`);
         response = {
             statusCode: 200,
             body: dbResponse
@@ -48,12 +43,12 @@ const updateOrderStatus = async (body) => {
     return response;
 };
 exports.handleEventHandler = async (event) => {
-    console.log(`Event from ${event.source}: ${event.detail["order_id"]["S"]} - ${event.detail["status"]["S"]}`);
+    console.log(`Event from ${event.source}: ${JSON.stringify(event)}`);
     const body = event.detail;
-    const { status } = body;
+    const status = body.status.S;
     console.log('Status: ', status);
     let response;
-    if (status == OrderStatusEnum_1.default.AwaitingPayment) {
+    if (event.source == "CoffeeService.payments") {
         const orderStatusResponse = await updateOrderStatus(body);
         response = orderStatusResponse;
         console.log(response);
