@@ -13,7 +13,3 @@ export interface Order {
         S: string;
     };
 }
-export interface DynamoDBOrderParams {
-    TableName: string;
-    Item: Order;
-}

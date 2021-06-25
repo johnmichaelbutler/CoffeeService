@@ -15,13 +15,13 @@ const updateOrderStatus = async (body: Order) => {
     TableName: tableName,
     Key: {
       order_id: {
-        "S": order_id
+        "S": order_id.S
       }
     },
     ReturnConsumedCapacity: "TOTAL",
     UpdateExpression: 'SET #stat = :status',
     ExpressionAttributeValues: {
-      ":status": { "S": status }
+      ":status": { "S": status.S }
     },
     ExpressionAttributeNames: {
       "#stat": "status"
@@ -47,7 +47,7 @@ const updateOrderStatus = async (body: Order) => {
 }
 
 exports.handleEventHandler = async (event: any) => {
-  console.log(`Event from ${event.source}: ${event.detail["order_id"]} - ${event.detail["status"]}`);
+  console.log(`Event from ${event.source}: ${event.detail["order_id"]["S"]} - ${event.detail["status"]["S"]}`);
   const body = event.detail;
   const {status} = body;
   console.log('Status: ', status);

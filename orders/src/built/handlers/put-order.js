@@ -3,12 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// Create clients and set shared const values outside of the handler
 const client_eventbridge_1 = require("@aws-sdk/client-eventbridge");
-const dynamodb_1 = __importDefault(require("aws-sdk/clients/dynamodb"));
 const order_id_1 = __importDefault(require("../services/order_id"));
 const OrderStatusEnum_1 = __importDefault(require("../enums/OrderStatusEnum"));
-const docClient = new dynamodb_1.default.DocumentClient();
-const eventBridgeClient = new client_eventbridge_1.EventBridgeClient({ region: 'us-east-2' });
+const client_dynamodb_1 = require("@aws-sdk/client-dynamodb");
 const tableName = process.env.DYNAMODB_TABLE;
 const eventBus = process.env.EVENT_BUS;
 if (tableName == undefined) {
@@ -17,35 +16,63 @@ if (tableName == undefined) {
 if (eventBus == undefined) {
     throw new Error('Event Bus must be defined!');
 }
+const eventBridgeClient = new client_eventbridge_1.EventBridgeClient({ region: 'us-east-2' });
+const ddbClient = new client_dynamodb_1.DynamoDBClient({ region: 'us-east-2' });
 const saveOrderToDB = async (eventBody) => {
-    const { items, total, name, user_id, status } = eventBody;
+    console.log('Event body in saveOrderToDB', eventBody);
+    const { items, total, name, userId, status } = eventBody;
+    // let order = {
+    //   order_id: makeOrderId(),
+    //   status: status,
+    //   name: name,
+    //   user_id: userId,
+    //   items: items[0],
+    //   total: total.toString()
+    // };
+    let itemsForOrder = items.map((item) => {
+        return {
+            "M": {
+                "item": {
+                    "S": item.item
+                },
+                "quantity": {
+                    "S": item.quantity.toString()
+                }
+            }
+        };
+    });
     let order = {
-        order_id: order_id_1.default(),
-        status,
-        name,
-        user_id,
-        items,
-        total
+        "order_id": { "S": order_id_1.default() },
+        "status": { "S": status },
+        "name": { "S": name },
+        "user_id": { "S": userId },
+        "items": { "L": itemsForOrder },
+        "total": { "S": total.toString() }
     };
-    let ddbParams = {
+    let ddbInput = {
         TableName: tableName,
         Item: order
     };
-    const result = await docClient.put(ddbParams).promise();
-    console.log('result from saveOrderToDB', result);
-    const response = {
-        statusCode: 200,
-        body: JSON.stringify(order)
-    };
-    return response;
+    try {
+        console.log('Order', JSON.stringify(order));
+        console.log('ddbInput', ddbInput);
+        const command = new client_dynamodb_1.PutItemCommand(ddbInput);
+        const dbResult = await ddbClient.send(command);
+        console.log('result from saveOrderToDB', dbResult);
+        return order;
+    }
+    catch (error) {
+        console.log("Error saving to Database", error);
+        return error;
+    }
 };
-const publishEventToEventBus = async (eventBody) => {
-    console.log('Input for publishEventToEventBus', eventBody);
+const publishEventToEventBus = async (order) => {
+    console.log('Input for publishEventToEventBus', order);
     let eventBridgeParams = {
         Entries: [
             {
-                Detail: JSON.stringify(eventBody),
-                DetailType: eventBody.status,
+                Detail: JSON.stringify(order),
+                DetailType: order.status.S,
                 EventBusName: eventBus,
                 Source: 'CoffeeService.orders',
             }
@@ -81,14 +108,14 @@ exports.putOrderHandler = async (event) => {
     // Get order information from body
     let body = JSON.parse(event.body);
     let body_with_status = Object.assign({ status: OrderStatusEnum_1.default.Created }, body);
-    const dbResponse = await saveOrderToDB(body_with_status);
-    console.info(`response from: ${event.path} statusCode: ${dbResponse.statusCode} body: ${dbResponse.body}`);
+    // Save order to database
+    let order = await saveOrderToDB(body_with_status);
+    // Send Event to EventBus
     console.log('Starting putEvents action');
-    let event_body = JSON.parse(dbResponse.body);
-    const eventResponse = await publishEventToEventBus(event_body);
+    const eventResponse = await publishEventToEventBus(order);
     console.info(`response from: ${event.path} statusCode: ${eventResponse.statusCode} body: ${eventResponse.body}`);
     // All log statements are written to CloudWatch
-    console.log(`dbResponse, ${dbResponse}; eventResponse ${eventResponse}`);
+    console.log(`eventResponse ${eventResponse}`);
     let response = {
         statusCode: 200,
         headers: {
@@ -97,7 +124,7 @@ exports.putOrderHandler = async (event) => {
             'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ eventResponse, dbResponse })
+        body: 'Order Created and awaiting payment!'
     };
     return response;
 };

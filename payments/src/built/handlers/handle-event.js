@@ -6,8 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const client_eventbridge_1 = require("@aws-sdk/client-eventbridge");
 const client_dynamodb_1 = require("@aws-sdk/client-dynamodb");
 const OrderStatusEnum_1 = __importDefault(require("../enums/OrderStatusEnum"));
-const ddbClient = new client_dynamodb_1.DynamoDBClient({ region: 'us-east-2' });
-const eventBridgeClient = new client_eventbridge_1.EventBridgeClient({ region: 'us-east-2' });
 const tableName = process.env.DYNAMODB_TABLE;
 const eventBus = process.env.EVENT_BUS;
 if (tableName == undefined) {
@@ -16,6 +14,8 @@ if (tableName == undefined) {
 if (eventBus == undefined) {
     throw new Error('Event Bus must be defined!');
 }
+const ddbClient = new client_dynamodb_1.DynamoDBClient({ region: 'us-east-2' });
+const eventBridgeClient = new client_eventbridge_1.EventBridgeClient({ region: 'us-east-2' });
 const updateDB = async (eventBody) => {
     const { order_id, total, name } = eventBody;
     let newStatus = OrderStatusEnum_1.default.AwaitingPayment;
@@ -25,10 +25,6 @@ const updateDB = async (eventBody) => {
         name: name,
         total: total
     };
-    // const ddbParams: DynamoDBOrderParams = {
-    //   TableName: tableName,
-    //   Item: order
-    // };
     try {
         const ddbParams = {
             Item: order,
