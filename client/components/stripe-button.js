@@ -15,38 +15,38 @@ const StripeCheckoutButton = () => {
   const totalForStripe = total * 100;
   const publishableKey = 'pk_test_5uyEQjGOKix6ZbELqNtH7vu6003VbAEP1I';
 
-    // const {doRequest} = useRequest({
-    //   path: 'https://hnr395j1l6.execute-api.us-east-2.amazonaws.com/Dev/payments',
-    //   method: 'post',
-    //   body: {
-    //     order_id,
-    //     totalForStripe,
-    //     currentUser
-    //   },
-    //   onSuccess: () => console.log('Payment successfuly sent'),
-    //   currentUser
-    // });
+    const {doRequest} = useRequest({
+      path: 'https://hnr395j1l6.execute-api.us-east-2.amazonaws.com/Dev/payments',
+      method: 'post',
+      body: {
+        order_id,
+        totalForStripe,
+        currentUser: currentUser.username
+      },
+      onSuccess: () => console.log('Payment successfuly sent'),
+      currentUser
+    });
 
 
-      const headers = {
-    "Access-Control-Allow-Headers" : "*",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "*"
-  };
+    const headers = {
+      "Access-Control-Allow-Headers" : "*",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "*"
+    };
 
-    const makePost = async () => {
+    const makePost = async ({token}) => {
       let response = await axios.post(
         'https://hnr395j1l6.execute-api.us-east-2.amazonaws.com/Dev/payments',
         {
           order_id,
           totalForStripe,
-          currentUser
+          currentUser: currentUser.username,
+          token
         },
         headers
-
-
       );
       console.log('Response', response);
+      return response;
     }
 
 
@@ -61,7 +61,7 @@ const StripeCheckoutButton = () => {
       description={`Your total is $${total.toFixed(2)}`}
       amount={totalForStripe}
       panelLabel="Pay Now"
-      token={() => makePost()}
+      token={({id}) => makePost({token: id})}
       // token={({ id }) => doRequest({ token: id })}
       stripeKey={publishableKey}
     />

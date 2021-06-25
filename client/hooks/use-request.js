@@ -7,14 +7,14 @@ const useRequest = ({ url, method, body, onSuccess, currentUser }) => {
 
   const headers = {
     "Access-Control-Allow-Headers" : "*",
-    "Access-Control-Allow-Origin": "'*'",
+    "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "*"
   };
 
   if(currentUser) {
     doRequest = async (props = {}) => {
       try {
-        const response = await axios[method](url, {...body, headers, ...props});
+        const response = await axios[method](url, {...body, ...props, headers });
         console.log('Response from use-request', response);
         if(onSuccess) {
           // onSuccess(response.data);
