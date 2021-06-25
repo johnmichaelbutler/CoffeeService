@@ -4,7 +4,6 @@ import { EventBridgeClient, PutEventsCommand } from '@aws-sdk/client-eventbridge
 import Stripe from 'stripe';
 import OrderStatus from '../enums/OrderStatusEnum';
 import { Order } from '../interfaces/OrderInterface';
-import { String } from 'aws-sdk/clients/appstream';
 
 
 const tableName = process.env.DYNAMODB_TABLE;
@@ -64,7 +63,7 @@ const runStripeCharge = async (totalForStripe: Number, token: String) => {
   }
 };
 
-const getItemFromDB = async (order_id: String) => {
+const getItemFromDB = async (order_id: any) => {
   try {
     const ddbInput = {
       TableName: tableName,
@@ -106,14 +105,13 @@ const updateOrderInDB = async (Item: any) => {
   }
 };
 
-const publishEventToEventBus = async (eventBody: Order) => {
+const publishEventToEventBus = async (eventBody: any) => {
   console.log('Input for publishEventToEventBus', eventBody);
 
   let eventBridgeParams = {
     Entries: [
       {
         Detail: JSON.stringify(eventBody),
-        // @ts-ignore
         DetailType: eventBody.status.S,
         EventBusName: eventBus,
         Source: 'CoffeeService.payments',

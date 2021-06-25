@@ -1,9 +1,17 @@
 import OrderStatus from '../enums/OrderStatusEnum';
 export interface Order {
-    order_id: string;
-    name: string;
-    status: OrderStatus;
-    total: string;
+    order_id: {
+        S: string;
+    };
+    name: {
+        S: string;
+    };
+    status: {
+        S: OrderStatus;
+    };
+    total: {
+        S: string;
+    };
 }
 export interface DynamoDBOrderParams {
     TableName: string;

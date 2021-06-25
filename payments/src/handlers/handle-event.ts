@@ -1,16 +1,9 @@
 import { EventBridgeClient, PutEventsCommand } from '@aws-sdk/client-eventbridge';
-import dynamodb from 'aws-sdk/clients/dynamodb';
-import { Order, DynamoDBOrderParams } from '../interfaces/OrderInterface';
+import { Order } from '../interfaces/OrderInterface';
 import { Response } from '../interfaces/ResponseInterface';
 import { DynamoDBClient, PutItemCommand, PutItemCommandInput } from '@aws-sdk/client-dynamodb';
-import {APIGatewayProxyEvent} from 'aws-lambda';
 import OrderStatus from '../enums/OrderStatusEnum';
 
-// const docClient = new DynamoDBClient({region: 'us-east-2'});
-
-const docClient = new dynamodb.DocumentClient();
-
-const eventBridgeClient = new EventBridgeClient({region: 'us-east-2'});
 
 const tableName = process.env.DYNAMODB_TABLE;
 const eventBus = process.env.EVENT_BUS;
@@ -22,49 +15,44 @@ if(eventBus == undefined) {
   throw new Error('Event Bus must be defined!');
 }
 
+const ddbClient = new DynamoDBClient({region: 'us-east-2'});
+const eventBridgeClient = new EventBridgeClient({region: 'us-east-2'});
+
 const updateDB = async (eventBody: Order) => {
   const {order_id, total, name } = eventBody;
+  let newStatus = OrderStatus.AwaitingPayment;
 
-  let order: Order = {
+  let order = {
     order_id: order_id,
-    status: OrderStatus.AwaitingPayment,
+    status: {S: newStatus},
     name: name,
     total: total
   };
 
-  const ddbParams: DynamoDBOrderParams = {
-    TableName: tableName,
-    Item: order
-  };
-
-  let response: Response;
-
   try {
-    console.log({ddbParams});
-    const result = await docClient.put(ddbParams).promise();
-    console.log(`Successfully saved to Payments  DB: ${result}`);
-    response = {
-      statusCode: 200,
-      body: result
+    const ddbParams: PutItemCommandInput = {
+      Item: order,
+      TableName: tableName,
     };
+    console.log({ddbParams});
+    const command = new PutItemCommand(ddbParams);
+    const result = await ddbClient.send(command);
+    console.log(`Successfully saved to Payments  DB: ${result}`);
+    return result;
   } catch (error) {
     console.error('Error saving to Payments DB', error);
-    response = {
-      statusCode: 200,
-      body: error
-    }
+    return error;
   }
-  return response;
 };
 
 const publishAwaitPaymentEvent = async (eventBody: Order) => {
-  eventBody.status = OrderStatus.AwaitingPayment;
+  eventBody.status.S = OrderStatus.AwaitingPayment;
 
   let eventBridgeParams = {
     Entries: [
       {
         Detail: JSON.stringify(eventBody),
-        DetailType: eventBody.status,
+        DetailType: eventBody.status.S,
         EventBusName: eventBus,
         Source: 'CoffeeService.payments'
       }

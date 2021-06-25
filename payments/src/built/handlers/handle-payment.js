@@ -108,7 +108,6 @@ const publishEventToEventBus = async (eventBody) => {
         Entries: [
             {
                 Detail: JSON.stringify(eventBody),
-                // @ts-ignore
                 DetailType: eventBody.status.S,
                 EventBusName: eventBus,
                 Source: 'CoffeeService.payments',
@@ -141,28 +140,26 @@ exports.handlePaymentHandler = async (event) => {
     }
     ;
     // // Check to see if order is 'awaiting:payment', if not return not valid
-    // if(itemToProcess.status.S != OrderStatus.AwaitingPayment) {
-    //   return {
-    //     statusCode: 400,
-    //     body: 'Order is no longer valid'
-    //   }
-    // };
-    // Run Stripe Charge
-    // let charge = await runStripeCharge(totalForStripe, token)
-    // if(charge.type == "StripeCardError") {
-    //   return {
-    //     statusCode: 402,
-    //     body: "Error processing payment"
-    //   }
-    // }
-    // // If successful, update item to be status 'order:paid
+    if (itemToProcess.status.S != OrderStatusEnum_1.default.AwaitingPayment) {
+        return {
+            statusCode: 400,
+            body: 'Order is no longer valid'
+        };
+    }
+    ;
+    // Run Stripe Charge and check if charge is valid
+    let charge = await runStripeCharge(totalForStripe, token);
+    if (charge.type == "StripeCardError") {
+        return {
+            statusCode: 402,
+            body: "Error processing payment"
+        };
+    }
+    // If successful, update item to be status 'preparing'
     const updateDBResponse = await updateOrderInDB(itemToProcess);
     const updatedItem = updateDBResponse.Attributes;
-    console.log({ updatedItem });
-    // // Todo: Send Event
-    const eventResponse = await publishEventToEventBus(updatedItem);
-    console.log({ eventResponse });
-    let responseBody = `updateDBResponse: ${JSON.stringify(eventResponse)}`;
+    // Send Event to EventBus with updated item
+    await publishEventToEventBus(updatedItem);
     let response = {
         statusCode: 200,
         headers: {
@@ -171,7 +168,7 @@ exports.handlePaymentHandler = async (event) => {
             'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json'
         },
-        body: responseBody
+        body: "Payment Completed! Your Order is being made now!"
     };
     return response;
 };
