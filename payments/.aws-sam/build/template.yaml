@@ -30,6 +30,7 @@ Resources:
           DYNAMODB_TABLE:
             Ref: PaymentsTable
           EVENT_BUS: CoffeeServiceEventBus
+          STRIPE_PARAMETER_STORE_NAME: /CoffeeService/Dev/stripe-secret-key
       Events:
         Api:
           Type: Api
@@ -55,6 +56,8 @@ Resources:
             Ref: PaymentsTable
       - EventBridgePutEventsPolicy:
           EventBusName: CoffeeServiceEventBus
+      - SSMParameterReadPolicy:
+          ParameterName: /CoffeeService/Dev/stripe-secret-key
       Environment:
         Variables:
           DYNAMODB_TABLE:
