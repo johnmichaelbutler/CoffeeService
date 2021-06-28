@@ -5,15 +5,15 @@ import { APIGatewayProxyEvent } from 'aws-lambda';
 import makeOrderId from '../services/order_id';
 import OrderStatus from '../enums/OrderStatusEnum';
 import { PutItemCommand, DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import checker from '../services/envVarChecker';
 
 const tableName = process.env.DYNAMODB_TABLE;
 const eventBus = process.env.EVENT_BUS;
 
-if(tableName == undefined) {
-  throw new Error('Table name must be defined!');
-}
-if(eventBus == undefined) {
-  throw new Error('Event Bus must be defined!');
+const missing = checker(process.env);
+if(missing.length) {
+  const vars = missing.join(', ');
+  throw new Error(`Missing required environment variables: ${vars}`);
 }
 
 
