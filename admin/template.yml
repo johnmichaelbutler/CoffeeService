@@ -1,0 +1,98 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  admin
+Transform:
+- AWS::Serverless-2016-10-31
+Resources:
+  coffeeServiceAdminApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Dev
+      Cors:
+        AllowHeaders: "'*'"
+        AllowMethods: "'*'"
+        AllowOrigin: "'*'"
+  pollSQSFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/poll-SQS.handlePollSQS
+      Runtime: nodejs12.x
+      MemorySize: 128
+      Timeout: 100
+      Description: Function that polls SQS queue for Orders
+      Policies:
+        # Give Create/Read/Update/Delete Permissions to the SampleTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SampleTable
+        - EventBridgePutEventsPolicy:
+            EventBusName: CoffeeServiceEventBus
+      Environment:
+        Variables:
+          EVENT_BUS: CoffeeServiceEventBus
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /
+            Method: GET
+            RestApiId: !Ref coffeeServiceAdminApi
+  AdminTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: order_id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+
+  adminSQSQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: AdminQueue.fifo
+      FifoQueue: true
+
+  # Allow EventBridge to invoke SQS
+  EventBridgeToToSqsPolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: events.amazonaws.com
+          Action: SQS:SendMessage
+          Resource:  !GetAtt adminSQSQueue.Arn
+      Queues:
+        - Ref: adminSQSQueue
+
+  # Define the event rule to filter for events
+  EventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: "EventRule"
+      EventPattern:
+        source:
+          - "CoffeeService.orders"
+          - "CoffeeService.payments"
+        detail-type:
+          - "preparing"
+      Targets:
+        - Arn: !GetAtt adminSQSQueue.Arn
+          Id: "adminSQSQueue"
+
+
+
+Outputs:
+  SQSqueueName:
+    Description: SNS queue name
+    Value: !GetAtt adminSQSQueue.QueueName
+
+  SQSqueueARN:
+    Description: SQS queue ARN
+    Value: !GetAtt adminSQSQueue.Arn
+
+  SQSqueueURL:
+    Description: SQS queue URL
+    Value: !Ref adminSQSQueue
+
