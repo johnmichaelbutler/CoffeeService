@@ -16,15 +16,15 @@ Resources:
   pollSQSFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/poll-SQS.handlePollSQS
+      Handler: src/built/handlers/poll-SQS.handlePollSQS
       Runtime: nodejs12.x
       MemorySize: 128
       Timeout: 100
       Description: Function that polls SQS queue for Orders
       Policies:
-        # Give Create/Read/Update/Delete Permissions to the SampleTable
+        # Give Create/Read/Update/Delete Permissions to the AdminTable
         - DynamoDBCrudPolicy:
-            TableName: !Ref SampleTable
+            TableName: !Ref AdminTable
         - EventBridgePutEventsPolicy:
             EventBusName: CoffeeServiceEventBus
         - SQSPollerPolicy:
@@ -36,7 +36,7 @@ Resources:
         Api:
           Type: Api
           Properties:
-            Path: /
+            Path: /orders
             Method: GET
             RestApiId: !Ref coffeeServiceAdminApi
 
@@ -44,7 +44,7 @@ Resources:
   handleEventsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/built/handlers/handle-event.handleEventsHandler
+      Handler: src/built/handlers/handle-events.handleEventsHandler
       Runtime: nodejs12.x
       CodeUri:
       DeadLetterQueue:
@@ -53,12 +53,12 @@ Resources:
       Timeout: 100
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref PaymentsTable
+            TableName: !Ref AdminTable
         - EventBridgePutEventsPolicy:
             EventBusName: CoffeeServiceEventBus
       Environment:
         Variables:
-          DYNAMODB_TABLE: !Ref PaymentsTable
+          DYNAMODB_TABLE: !Ref AdminTable
           EVENT_BUS: CoffeeServiceEventBus
       Events:
         HandlePaymentEventsRule:
@@ -69,6 +69,32 @@ Resources:
               source:
                 - 'CoffeeService.orders'
                 - 'CoffeeService.payments'
+
+  # Complete Order Function
+  completeOrderFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/built/handlers/complete-order.completeOrderHandler
+      Runtime: nodejs12.x
+      MemorySize: 128
+      Timeout: 100
+      Description: Function that updates order to complete
+      Policies:
+        # Give Create/Read/Update/Delete Permissions to the AdminTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref AdminTable
+        - EventBridgePutEventsPolicy:
+            EventBusName: CoffeeServiceEventBus
+      Environment:
+        Variables:
+          EVENT_BUS: CoffeeServiceEventBus
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /orders
+            Method: POST
+            RestApiId: !Ref coffeeServiceAdminApi
 
   # DynamoDB Table
   AdminTable:
@@ -118,6 +144,8 @@ Resources:
       Targets:
         - Arn: !GetAtt adminSQSQueue.Arn
           Id: "adminSQSQueue"
+          SqsParameters:
+            MessageGroupId: drinkOrders
 
 
 

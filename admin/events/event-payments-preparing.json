@@ -1,7 +1,7 @@
 {
   "version": "0",
   "id": "d863b3bd-9ce0-2b89-ffa1-c5ca66c41381",
-  "detail-type": "created",
+  "detail-type": "preparing",
   "source": "CoffeeService.payments",
   "account": "812961115575",
   "time": "2021-06-25T22:03:34Z",
