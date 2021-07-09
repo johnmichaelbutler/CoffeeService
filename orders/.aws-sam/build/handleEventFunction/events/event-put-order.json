@@ -1,4 +1,0 @@
-{
-  "httpMethod": "POST",
-  "body": "{\"order_id\":\"25\",\"name\":\"John\",\"status\":\"order_created\",\"price\":\"4.00\",\"items\":{\"coffee\":\"2\"}}"
-}

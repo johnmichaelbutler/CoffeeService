@@ -19,6 +19,8 @@
     "build": "sam build",
     "deploy": "tsc && sam build && sam deploy",
     "local": "tsc && sam build",
-    "local-event": "tsc && sam local invoke \"handleEventsFunction\" -e events/event-event.json -t template.yml --env-vars env.json -l eventbridge-logs.txt"
+    "local-event-created": "tsc && sam local invoke \"handleEventsFunction\" -e events/event-created-event.json -t template.yml --env-vars env.json -l logs/eventbridge-logs.txt",
+    "local-event-preparing": "tsc && sam local invoke \"handleEventsFunction\" -e events/event-payments-preparing.json -t template.yml --env-vars env.json -l logs/eventbridge-logs.txt",
+    "start-api": "tsc && sam local start-api --env-vars env.json -l logs/api-logs.txt --port 3002 "
   }
 }

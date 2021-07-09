@@ -1,41 +1,27 @@
 {
-  "version": "0",
-  "id": "d863b3bd-9ce0-2b89-ffa1-c5ca66c41381",
-  "detail-type": "preparing",
-  "source": "CoffeeService.payments",
-  "account": "812961115575",
-  "time": "2021-06-25T22:03:34Z",
-  "region": "us-east-2",
-  "resources": [],
-  "detail": {
-    "order_id": {
-        "S": "f6d6b07020846742"
-    },
-    "status": {
-        "S": "preparing"
-    },
-    "name": {
-        "S": "John Butler"
-    },
-    "user_id": {
-        "S": "68166769-4081-45d4-abef-4bb656f7e778"
-    },
-    "items": {
-        "L": [
-            {
-                "M": {
-                    "item": {
-                        "S": "Iced Coffee"
-                    },
-                    "quantity": {
-                        "S": "4"
-                    }
-                }
-            }
-        ]
-    },
-    "total": {
-        "S": "10"
+    "version": "0",
+    "id": "a49c5b15-512c-2ecb-799b-9eb97abcd15f",
+    "detail-type": "preparing",
+    "source": "CoffeeService.payments",
+    "account": "812961115575",
+    "time": "2021-07-09T15:05:50Z",
+    "region": "us-east-2",
+    "resources": [],
+    "detail": {
+        "total": {
+            "S": "27"
+        },
+        "user_id": {
+            "S": "68166769-4081-45d4-abef-4bb656f7e778"
+        },
+        "order_id": {
+            "S": "fab5bb10ba9c1da4"
+        },
+        "name": {
+            "S": "John Butler II"
+        },
+        "status": {
+            "S": "preparing"
+        }
     }
-  }
 }

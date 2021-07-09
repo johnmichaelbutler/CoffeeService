@@ -1,4 +1,4 @@
-import { DynamoDBClient, PutItemCommand, PutItemCommandInput } from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, PutItemCommand, PutItemCommandInput, UpdateItemCommand, UpdateItemCommandInput } from '@aws-sdk/client-dynamodb';
 import OrderStatus from '../enums/OrderStatusEnum';
 import envVarChecker from '../services/envVarChecker';
 import {EventType, Detail} from '../interfaces/EventInterface';
@@ -55,6 +55,45 @@ const createOrderToAdminDB = async (eventBody: Detail) => {
   }
 };
 
+const updateOrderStatus = async (body: any) => {
+  const {order_id, status} = body;
+
+  const params: UpdateItemCommandInput = {
+    TableName: tableName,
+    Key: {
+      order_id: {
+        "S": order_id.S
+      }
+    },
+    ReturnConsumedCapacity: "TOTAL",
+    UpdateExpression: 'SET #stat = :status',
+    ExpressionAttributeValues: {
+      ":status": { "S": status.S }
+    },
+    ExpressionAttributeNames: {
+      "#stat": "status"
+    }
+  };
+
+  const command = new UpdateItemCommand(params);
+  let response;
+
+  try {
+    const dbResponse = await ddbClient.send(command);
+    console.log(`Response from Admin DB Status Update: ${JSON.stringify(dbResponse)}`)
+    response = {
+      statusCode: 200,
+      body: dbResponse
+    }
+  } catch (error) {
+    console.log(`Error updating to Admin DB order status: ${error}`);
+    response = {
+      statusCode: 200,
+      body: error
+    };
+  };
+  return response;
+}
 
 // This function should handle the event and update the admin db table if order is 'preparing'
 exports.handleEventsHandler = async (event: EventType) => {
@@ -62,9 +101,15 @@ exports.handleEventsHandler = async (event: EventType) => {
   const body = event.detail;
   console.log('Body from EventBridge', {body});
 
-  if(body.status.S == OrderStatus.Preparing) {
-    // Update database
+  if(event.source === 'CoffeeService.orders') {
+    // Create order in Admin DB
     const dbResponse = await createOrderToAdminDB(body);
+    console.log('Response from saving order to DB', dbResponse);
+  }
+
+  if(event.source === 'CoffeeService.payments') {
+    // Update order status in DB
+    const dbResponse = await updateOrderStatus(body);
     console.info('Response from updateDB', dbResponse);
   };
 };

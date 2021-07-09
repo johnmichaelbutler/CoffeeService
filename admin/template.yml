@@ -107,12 +107,17 @@ Resources:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
 
+  # # SQS Queue
+  # adminSQSQueue:
+  #   Type: AWS::SQS::Queue
+  #   Properties:
+  #     QueueName: AdminQueue.fifo
+  #     FifoQueue: true
   # SQS Queue
   adminSQSQueue:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: AdminQueue.fifo
-      FifoQueue: true
+      QueueName: AdminQueue
 
   # SQS Queue Policy
   # Allow EventBridge to invoke SQS
@@ -135,17 +140,17 @@ Resources:
     Type: AWS::Events::Rule
     Properties:
       Description: "EventRule"
+      EventBusName: CoffeeServiceEventBus
       EventPattern:
         source:
-          - "CoffeeService.orders"
           - "CoffeeService.payments"
         detail-type:
           - "preparing"
       Targets:
         - Arn: !GetAtt adminSQSQueue.Arn
           Id: "adminSQSQueue"
-          SqsParameters:
-            MessageGroupId: drinkOrders
+          # SqsParameters:
+          #   MessageGroupId: drinkOrders
 
 
 

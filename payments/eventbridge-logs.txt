@@ -1,0 +1,6 @@
+2021-07-09T00:16:33.986Z	c1f58f54-d0b6-4912-8e9f-4e06dee4f4de	INFO	Event from payments/handleEventsHandler {"version":"0","id":"d863b3bd-9ce0-2b89-ffa1-c5ca66c41381","detail-type":"preparing","source":"CoffeeService.payments","account":"812961115575","time":"2021-06-25T22:03:34Z","region":"us-east-2","resources":[],"detail":{"order_id":{"S":"f6d6b07020846742"},"status":{"S":"preparing"},"name":{"S":"John Butler"},"user_id":{"S":"68166769-4081-45d4-abef-4bb656f7e778"},"items":{"L":[{"M":{"item":{"S":"Iced Coffee"},"quantity":{"S":"4444"}}}]},"total":{"S":"10000"}}}
+2021-07-09T00:16:33.990Z	c1f58f54-d0b6-4912-8e9f-4e06dee4f4de	INFO	{  body: {    order_id: { S: 'f6d6b07020846742' },    status: { S: 'preparing' },    name: { S: 'John Butler' },    user_id: { S: '68166769-4081-45d4-abef-4bb656f7e778' },    items: { L: [Array] },    total: { S: '10000' }  }}
+2021-07-09T00:16:33.990Z	c1f58f54-d0b6-4912-8e9f-4e06dee4f4de	INFO	Body from EventBridge { S: 'f6d6b07020846742' } { S: 'preparing' } { S: '10000' } { S: 'John Butler' }
+END RequestId: c1f58f54-d0b6-4912-8e9f-4e06dee4f4de
+REPORT RequestId: c1f58f54-d0b6-4912-8e9f-4e06dee4f4de	Init Duration: 0.33 ms	Duration: 2027.63 ms	Billed Duration: 2100 ms	Memory Size: 128 MB	Max Memory Used: 128 MB	
+null

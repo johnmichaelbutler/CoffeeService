@@ -1,4 +1,14 @@
 {
   "httpMethod": "POST",
-  "body": "{\"order_id\":\"25\",\"name\":\"John\",\"status\":\"order_created\",\"price\":\"4.00\",\"items\":{\"coffee\":\"2\"}}"
+  "body": {
+    "items": [
+      {
+        "item": "Iced Coffee",
+        "quantity": 4
+      }
+    ],
+    "userId" :"68166769-4081-45d4-abef-4bb656f7e778",
+    "name": "John Butler",
+    "total": 10
+  }
 }

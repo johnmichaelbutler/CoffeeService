@@ -40,7 +40,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var client_dynamodb_1 = require("@aws-sdk/client-dynamodb");
-var OrderStatusEnum_1 = __importDefault(require("../enums/OrderStatusEnum"));
 var envVarChecker_1 = __importDefault(require("../services/envVarChecker"));
 var tableName = process.env.DYNAMODB_TABLE;
 var missing = envVarChecker_1.default(process.env);
@@ -95,22 +94,78 @@ var createOrderToAdminDB = function (eventBody) { return __awaiter(void 0, void 
         }
     });
 }); };
+var updateOrderStatus = function (body) { return __awaiter(void 0, void 0, void 0, function () {
+    var order_id, status, params, command, response, dbResponse, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                order_id = body.order_id, status = body.status;
+                params = {
+                    TableName: tableName,
+                    Key: {
+                        order_id: {
+                            "S": order_id.S
+                        }
+                    },
+                    ReturnConsumedCapacity: "TOTAL",
+                    UpdateExpression: 'SET #stat = :status',
+                    ExpressionAttributeValues: {
+                        ":status": { "S": status.S }
+                    },
+                    ExpressionAttributeNames: {
+                        "#stat": "status"
+                    }
+                };
+                command = new client_dynamodb_1.UpdateItemCommand(params);
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, ddbClient.send(command)];
+            case 2:
+                dbResponse = _a.sent();
+                console.log("Response from Admin DB Status Update: " + JSON.stringify(dbResponse));
+                response = {
+                    statusCode: 200,
+                    body: dbResponse
+                };
+                return [3 /*break*/, 4];
+            case 3:
+                error_2 = _a.sent();
+                console.log("Error updating to Admin DB order status: " + error_2);
+                response = {
+                    statusCode: 200,
+                    body: error_2
+                };
+                return [3 /*break*/, 4];
+            case 4:
+                ;
+                return [2 /*return*/, response];
+        }
+    });
+}); };
 // This function should handle the event and update the admin db table if order is 'preparing'
 exports.handleEventsHandler = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var body, dbResponse;
+    var body, dbResponse, dbResponse;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 console.log("Event from payments/handleEventsHandler " + JSON.stringify(event));
                 body = event.detail;
                 console.log('Body from EventBridge', { body: body });
-                if (!(body.status.S == OrderStatusEnum_1.default.Preparing)) return [3 /*break*/, 2];
+                if (!(event.source === 'CoffeeService.orders')) return [3 /*break*/, 2];
                 return [4 /*yield*/, createOrderToAdminDB(body)];
             case 1:
                 dbResponse = _a.sent();
-                console.info('Response from updateDB', dbResponse);
+                console.log('Response from saving order to DB', dbResponse);
                 _a.label = 2;
             case 2:
+                if (!(event.source === 'CoffeeService.payments')) return [3 /*break*/, 4];
+                return [4 /*yield*/, updateOrderStatus(body)];
+            case 3:
+                dbResponse = _a.sent();
+                console.info('Response from updateDB', dbResponse);
+                _a.label = 4;
+            case 4:
                 ;
                 return [2 /*return*/];
         }

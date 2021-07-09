@@ -77,12 +77,14 @@ const publishAwaitPaymentEvent = async (eventBody) => {
 };
 // This function should handle the event and update the payments db table to include the order
 exports.handleEventsHandler = async (event) => {
-    console.log(`Event from payments/handleEventsHandler ${JSON.stringify(event)}`);
+    console.log(`Event from ${event.source} ${JSON.stringify(event)}`);
     const body = event.detail;
     console.log({ body });
     const { order_id, status, total, name } = body;
     console.log('Body from EventBridge', order_id, status, total, name);
-    if (status.S == 'created') {
+    if (status.S === OrderStatusEnum_1.default.Created) {
+        // REMOVE: FOR DEBUGGING
+        console.log('Saving to Database');
         // Save to Database, where status is updated to 'awaiting_payment'
         const dbResponse = await updateDB(body);
         console.info('Response from updateDB', dbResponse);

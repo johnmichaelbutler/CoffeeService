@@ -1,0 +1,41 @@
+{
+  "version": "0",
+  "id": "9a436f9b-fc2a-cec1-7fe0-88078b24823f",
+  "detail-type": "awaiting:payment",
+  "source": "CoffeeService.payments",
+  "account": "812961115575",
+  "time": "2021-07-09T14:27:23Z",
+  "region": "us-east-2",
+  "resources": [],
+  "detail": {
+      "order_id": {
+          "S": "646e0a3a73ed5c15"
+      },
+      "status": {
+          "S": "awaiting:payment"
+      },
+      "name": {
+          "S": "John Butler"
+      },
+      "user_id": {
+          "S": "68166769-4081-45d4-abef-4bb656f7e778"
+      },
+      "items": {
+          "L": [
+              {
+                  "M": {
+                      "item": {
+                          "S": "Iced Coffee"
+                      },
+                      "quantity": {
+                          "S": "4"
+                      }
+                  }
+              }
+          ]
+      },
+      "total": {
+          "S": "10"
+      }
+  }
+}

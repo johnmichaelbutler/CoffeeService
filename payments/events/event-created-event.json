@@ -1,21 +1,21 @@
 {
     "version": "0",
-    "id": "ea004ef2-9832-d235-cd69-ea8c2441cd10",
+    "id": "8f4b58dd-8ff1-1cbb-a610-f9450d0cda2c",
     "detail-type": "created",
     "source": "CoffeeService.orders",
     "account": "812961115575",
-    "time": "2021-07-09T15:00:42Z",
+    "time": "2021-07-09T04:24:57Z",
     "region": "us-east-2",
     "resources": [],
     "detail": {
         "order_id": {
-            "S": "fab5bb10ba9c1da4"
+            "S": "646e0a3a73ed5c15"
         },
         "status": {
             "S": "created"
         },
         "name": {
-            "S": "John Butler II"
+            "S": "John Butler"
         },
         "user_id": {
             "S": "68166769-4081-45d4-abef-4bb656f7e778"
@@ -28,14 +28,14 @@
                             "S": "Iced Coffee"
                         },
                         "quantity": {
-                            "S": "27"
+                            "S": "4"
                         }
                     }
                 }
             ]
         },
         "total": {
-            "S": "27"
+            "S": "10"
         }
     }
 }

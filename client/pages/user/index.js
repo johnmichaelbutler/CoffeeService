@@ -12,7 +12,7 @@ const Index = () => {
   Amplify.configure({ ...awsExports, ssr: true });
 
   const currentUser = useSelector(selectCurrentUser);
-  const name = currentUser ? currentUser.attributes.name : null;
+  // const name = currentUser ? currentUser.attributes.name : null;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -33,7 +33,8 @@ const Index = () => {
   (
     <div className="pt-16">
       <div className="grid justify-center mt-10 gap-3">
-        <h1 className="font-semibold text-lg">Welcome, {name}</h1>
+        {/* <h1 className="font-semibold text-lg">Welcome, {name}</h1> */}
+        <h1 className="font-semibold text-lg">Welcome</h1>
         <div className="w-10 ml-5">
           <AmplifySignOut handleAuthStateChange={signOutAuthStateHandler}/>
         </div>
