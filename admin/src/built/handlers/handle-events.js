@@ -42,7 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var client_dynamodb_1 = require("@aws-sdk/client-dynamodb");
 var envVarChecker_1 = __importDefault(require("../services/envVarChecker"));
 var tableName = process.env.DYNAMODB_TABLE;
-var missing = envVarChecker_1.default(process.env);
+var missing = envVarChecker_1.default(process.env, "handleEventsFunction");
 if (missing.length > 0) {
     throw new Error("Missing Environment Variables: " + missing);
 }

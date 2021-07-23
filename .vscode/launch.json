@@ -3,6 +3,23 @@
     {
       "type": "aws-sam",
       "request": "direct-invoke",
+      "name": "API admin:pollSQSFunction",
+      "invokeTarget": {
+        "target": "api",
+        "templatePath": "${workspaceFolder}/admin/template.yml",
+        "logicalId": "pollSQSFunction"
+      },
+      "api": {
+        "path": "/",
+        "httpMethod": "get",
+        "payload": {
+          "json": {}
+        }
+      }
+    },
+    {
+      "type": "aws-sam",
+      "request": "direct-invoke",
       "name": "orders:putOrderFunction",
       "invokeTarget": {
         "target": "template",

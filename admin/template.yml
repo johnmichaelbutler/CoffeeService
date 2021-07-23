@@ -32,6 +32,8 @@ Resources:
       Environment:
         Variables:
           EVENT_BUS: CoffeeServiceEventBus
+          SQS_URL: !Ref adminSQSQueue
+          DYNAMODB_TABLE: !Ref AdminTable
       Events:
         Api:
           Type: Api

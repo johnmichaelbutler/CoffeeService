@@ -1,0 +1,10 @@
+{
+  "Messages": [
+      {
+          "MessageId": "eaa55510-2928-483c-b675-f1753cf85175",
+          "ReceiptHandle": "AQEBoLqKBbCu2/+oF12A8aA/W+37vSfJU8EdA1+yrzZMTOSiPfquBXZRAOEGkS6sfDXSvATrYLdgKsTv+Twsrn2I1rVztUIGJhTWlw7aIfnpN0jz7IZFqwQ6elHaNaqmy+Dp+oC8MGLH/u8m3hx6PdQlN4aLEISJ63LeddeidPkhg0saPChRJRI8YWeQ+FQJaS+GoLs3dpK5ujaRPMoIPDLwASSqDeR9zmKdC7DN0anY+81ZTiMlvprtmqyPUAdt2wBDDa6gZukBSYEILwnzat+xyneMMiFPQ1UOl1MCIoYGSFJ1Zdsli2zBGJwSWLp3ZD8sBz3gj/sVTUj4b7bZ529W7jDOqN5ARWxO8Z1J5/w416GM3o2RbjRaNwe+j4/L4tVnjRoxK5rrK5kyWnhey9Md5w==",
+          "MD5OfBody": "857c066fb842bbd3f3c161b57503be67",
+          "Body": "{\n    \"version\": \"0\",\n    \"id\": \"a49c5b15-512c-2ecb-799b-9eb97abcd15f\",\n    \"detail-type\": \"preparing\",\n    \"source\": \"CoffeeService.payments\",\n    \"account\": \"812961115575\",\n    \"time\": \"2021-07-09T15:05:50Z\",\n    \"region\": \"us-east-2\",\n    \"resources\": [],\n    \"detail\": {\n        \"total\": {\n            \"S\": \"27\"\n        },\n        \"user_id\": {\n            \"S\": \"68166769-4081-45d4-abef-4bb656f7e778\"\n        },\n        \"order_id\": {\n            \"S\": \"fab5bb10ba9c1da4\"\n        },\n        \"name\": {\n            \"S\": \"John Butler II\"\n        },\n        \"status\": {\n            \"S\": \"preparing\"\n        }\n    }\n}"
+      }
+  ]
+}

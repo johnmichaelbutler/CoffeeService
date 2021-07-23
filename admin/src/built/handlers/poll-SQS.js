@@ -35,8 +35,135 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.handlePollSQS = function () { return __awaiter(void 0, void 0, void 0, function () {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var client_sqs_1 = require("@aws-sdk/client-sqs");
+var client_dynamodb_1 = require("@aws-sdk/client-dynamodb");
+var envVarChecker_1 = __importDefault(require("../services/envVarChecker"));
+var missing = envVarChecker_1.default(process.env, "pollSQSFunction");
+if (missing.length > 0) {
+    throw new Error('Environment variable missing: ${missing}');
+}
+;
+var sqsUrl = process.env.SQS_URL;
+var tableName = process.env.DYNAMODB_TABLE;
+var sqsClient = new client_sqs_1.SQSClient({ region: 'us-east-2' });
+var ddbClient = new client_dynamodb_1.DynamoDBClient({ region: 'us-east-2' });
+var getOrders = function (messages) { return __awaiter(void 0, void 0, void 0, function () {
+    var orders;
     return __generator(this, function (_a) {
-        return [2 /*return*/, 'Hello SQS!'];
+        orders = [];
+        messages.forEach(function (message) {
+            var order = JSON.parse(message.Body);
+            orders.push(order.detail.order_id.S);
+        });
+        return [2 /*return*/, orders];
+    });
+}); };
+var getOrderItems = function (orderIds) { return __awaiter(void 0, void 0, void 0, function () {
+    var items;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, getItemsFromDB(orderIds)];
+            case 1:
+                items = _a.sent();
+                return [2 /*return*/, items];
+        }
+    });
+}); };
+var getItemsFromDB = function (orderIds) { return __awaiter(void 0, void 0, void 0, function () {
+    var orderKeys, input, command, response, orders, unfilteredOrders, ordersForClient, error_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                orderKeys = orderIds.map(function (orderId) {
+                    return {
+                        order_id: {
+                            S: orderId
+                        }
+                    };
+                });
+                input = {
+                    RequestItems: {
+                        'CoffeeService-Admin-AdminTable-L3WA2XNC8CZL': {
+                            "Keys": orderKeys,
+                        },
+                    },
+                    "ReturnConsumedCapacity": "TOTAL"
+                };
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                console.log('Input', JSON.stringify(input));
+                command = new client_dynamodb_1.BatchGetItemCommand(input);
+                return [4 /*yield*/, ddbClient.send(command)];
+            case 2:
+                response = _a.sent();
+                console.log('response from Database, getItemsFromDB', JSON.stringify(response));
+                orders = response.Responses['CoffeeService-Admin-AdminTable-L3WA2XNC8CZL'];
+                unfilteredOrders = orders.map(function (order) {
+                    return {
+                        "Name": order.name.S,
+                        "order": order.items.L
+                    };
+                });
+                ordersForClient = unfilteredOrders.map(function (individualOrder) {
+                    var _a;
+                    var items = (_a = individualOrder.order) === null || _a === void 0 ? void 0 : _a.map(function (item) {
+                        var _a, _b;
+                        return {
+                            "item": (_a = item === null || item === void 0 ? void 0 : item.M) === null || _a === void 0 ? void 0 : _a.item.S,
+                            "quantity": (_b = item === null || item === void 0 ? void 0 : item.M) === null || _b === void 0 ? void 0 : _b.quantity.S
+                        };
+                    });
+                    return {
+                        "name": individualOrder.Name,
+                        "items": items
+                    };
+                });
+                console.log('Items for each order', JSON.stringify(ordersForClient));
+                return [2 /*return*/, ordersForClient];
+            case 3:
+                error_1 = _a.sent();
+                console.log('error in getItemsFromDB', error_1);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+exports.handlePollSQS = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var input, command, response, orderIds, orders, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 4, , 5]);
+                input = {
+                    QueueUrl: sqsUrl,
+                    MaxNumberOfMessages: 10,
+                    VisibilityTimeout: 30,
+                    WaitTimeSeconds: 5
+                };
+                command = new client_sqs_1.ReceiveMessageCommand(input);
+                return [4 /*yield*/, sqsClient.send(command)];
+            case 1:
+                response = _a.sent();
+                console.log('SQS response', response);
+                console.log('Table Name', tableName);
+                return [4 /*yield*/, getOrders(response.Messages)];
+            case 2:
+                orderIds = _a.sent();
+                console.log('orders', orderIds);
+                return [4 /*yield*/, getOrderItems(orderIds)];
+            case 3:
+                orders = _a.sent();
+                return [2 /*return*/, orders];
+            case 4:
+                error_2 = _a.sent();
+                console.log('error', error_2);
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/, null];
+        }
     });
 }); };

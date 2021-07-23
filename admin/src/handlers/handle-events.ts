@@ -1,13 +1,11 @@
 import { DynamoDBClient, PutItemCommand, PutItemCommandInput, UpdateItemCommand, UpdateItemCommandInput } from '@aws-sdk/client-dynamodb';
-import OrderStatus from '../enums/OrderStatusEnum';
 import envVarChecker from '../services/envVarChecker';
 import {EventType, Detail} from '../interfaces/EventInterface';
-import {} from '@aws-sdk/client-eventbridge';
 
 
 const tableName = process.env.DYNAMODB_TABLE;
 
-let missing = envVarChecker(process.env);
+let missing = envVarChecker(process.env, "handleEventsFunction");
 if(missing.length > 0) {
   throw new Error(`Missing Environment Variables: ${missing}`)
 }
