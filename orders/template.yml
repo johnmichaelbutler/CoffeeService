@@ -16,7 +16,7 @@ Resources:
   putOrderFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/built/handlers/put-order.putOrderHandler
+      Handler: src/built/src/handlers/put-order.putOrderHandler
       Runtime: nodejs12.x
       MemorySize: 128
       Timeout: 100
@@ -42,7 +42,7 @@ Resources:
   handleEventFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/built/handlers/handle-event.handleEventHandler
+      Handler: src/built/src/handlers/handle-event.handleEventHandler
       Runtime: nodejs12.x
       MemorySize: 128
       Timeout: 100

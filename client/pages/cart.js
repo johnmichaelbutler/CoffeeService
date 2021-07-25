@@ -36,7 +36,7 @@ function CartPage() {
     };
   });
 
-  let { doRequest } = useRequest({
+  let { doRequest, errors } = useRequest({
     url: 'https://a2zlteclg0.execute-api.us-east-2.amazonaws.com/Dev/',
     method: 'post',
     body: {
@@ -46,13 +46,19 @@ function CartPage() {
       total,
     },
     onSuccess: (res) => {
-      const {order_id} = JSON.parse(res.data.dbResponse.body)
+      console.log('Running on success', res);
+      const order_id = res.data.order_id.S;
       dispatch(updateOrderId(order_id));
     },
     currentUser
   });
 
+  console.log('Errors from useRequest', errors);
+
   useEffect(() => {
+    if(errors) {
+      setShowError(true);
+    };
     return () => {
       setShowError(false);
     }
@@ -74,7 +80,13 @@ function CartPage() {
       console.log('Creating order');
       try {
         const res = await doRequest();
-        router.push('/checkout');
+        if(!errors) {
+          console.log('Order created', res);
+          router.push('/checkout');
+        } else {
+          console.log('Order not created', res);
+        }
+        // router.push('/checkout');
       } catch (error) {
         console.log('Error sending request', error);
       }

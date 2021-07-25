@@ -14,6 +14,7 @@ const useRequest = ({ url, method, body, onSuccess, currentUser }) => {
   if(currentUser) {
     doRequest = async (props = {}) => {
       try {
+        console.log({url}, {body}, {method}, {currentUser}, {method});
         const response = await axios[method](url, {...body, ...props, headers });
         console.log('Response from use-request', response);
         if(onSuccess) {
@@ -22,6 +23,7 @@ const useRequest = ({ url, method, body, onSuccess, currentUser }) => {
         };
         return response.data;
       } catch (error) {
+        console.log('Error from use-request', error);
         // setErrors(
         //   <div className="text-red-400">
         //     <h4>Oooops...</h4>
@@ -33,7 +35,6 @@ const useRequest = ({ url, method, body, onSuccess, currentUser }) => {
         //   </div>
         // )
         setErrors(error);
-        console.log(error);
       }
     }
   }

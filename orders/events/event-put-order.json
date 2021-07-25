@@ -1,14 +1,5 @@
 {
-  "httpMethod": "POST",
-  "body": {
-    "items": [
-      {
-        "item": "Iced Coffee",
-        "quantity": 4
-      }
-    ],
-    "userId" :"68166769-4081-45d4-abef-4bb656f7e778",
-    "name": "John Butler",
-    "total": 10
+  "httpMethod" : "POST",
+  "body" :
+    "{\"items\":[{\"item\":\"Iced Coffee\",\"quantity\":4},{\"item\":\"Shot of Espresso\",\"quantity\":2}],\"userId\":\"2e41d66e-da06-48bf-b81c-cc7d1c63910f\",\"name\":\"John Michael\",\"total\":10}"
   }
-}

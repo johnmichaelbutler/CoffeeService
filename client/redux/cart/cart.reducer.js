@@ -11,15 +11,7 @@ const INITIAL_STATE = {
 const cartReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case HYDRATE:
-      // Updated based on next.js documentation. If this doensn't work, revert
-      const nextState = {
-        ...state,
-        ...action.payload
-      };
-      if(state.cartItems) {
-        nextState.cartItems = state.cartItems
-      }
-      return nextState;
+      return {...state, ...action.payload};
     case CartActionTypes.TOGGLE_CART_HIDDEN:
       return {
         ...state,

@@ -59,7 +59,7 @@ const saveOrderToDB = async (eventBody: any) => {
     console.log('result from saveOrderToDB', dbResult);
     return order;
   } catch (error) {
-    console.log("Error saving to Database", error);
+    throw new Error(`Error saving to Database error ${error}`);
     return error;
   }
 };
@@ -119,6 +119,7 @@ exports.putOrderHandler = async (event: APIGatewayProxyEvent) => {
 
   // All log statements are written to CloudWatch
   console.log(`eventResponse ${eventResponse}`);
+  console.log('Building the final response');
   let response = {
     statusCode: 200,
     headers: {
@@ -127,7 +128,8 @@ exports.putOrderHandler = async (event: APIGatewayProxyEvent) => {
       'Access-Control-Allow-Origin': '*',
       'Content-Type': 'application/json'
     },
-    body: 'Order Created and awaiting payment!'
+    body: JSON.stringify(order)
   };
+  console.log('Final response from order/put-order.ts', response);
   return response;
 };

@@ -1,11 +1,13 @@
 import {useEffect} from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import StripeCheckout from 'react-stripe-checkout';
 import { useRequest } from '../hooks/use-request';
 import {selectCartTotal} from '../redux/cart/cart.selectors';
 import {selectCurrentUser} from '../redux/user/user.selector';
 import {selectOrderId} from '../redux/order/order.selectors';
 import axios from 'axios';
+import { clearCart } from '../redux/cart/cart.actions';
+import { completeOrder } from '../redux/order/order.actions';
 
 const StripeCheckoutButton = () => {
   const total = useSelector(selectCartTotal);
@@ -15,15 +17,22 @@ const StripeCheckoutButton = () => {
   const totalForStripe = total * 100;
   const publishableKey = 'pk_test_5uyEQjGOKix6ZbELqNtH7vu6003VbAEP1I';
 
+  const dispatch = useDispatch();
+
     const {doRequest} = useRequest({
-      path: 'https://hnr395j1l6.execute-api.us-east-2.amazonaws.com/Dev/payments',
+      url: 'https://hnr395j1l6.execute-api.us-east-2.amazonaws.com/Dev/payments',
       method: 'post',
       body: {
         order_id,
         totalForStripe,
         currentUser: currentUser.username
       },
-      onSuccess: () => console.log('Payment successfuly sent'),
+      headers,
+      onSuccess: () => {
+        console.log('Payment successfuly sent')
+        resetReduxState();
+        // TODO: REDIRECT TO HOME PAGE AND CREATE A LITTLE POPUP SAYING ORDER COMPLETED
+      },
       currentUser
     });
 
@@ -34,19 +43,10 @@ const StripeCheckoutButton = () => {
       "Access-Control-Allow-Methods": "*"
     };
 
-    const makePost = async ({token}) => {
-      let response = await axios.post(
-        'https://hnr395j1l6.execute-api.us-east-2.amazonaws.com/Dev/payments',
-        {
-          order_id,
-          totalForStripe,
-          currentUser: currentUser.username,
-          token
-        },
-        headers
-      );
-      console.log('Response', response);
-      return response;
+
+    const resetReduxState = async () => {
+      dispatch(clearCart());
+      dispatch(completeOrder());
     }
 
 
@@ -61,8 +61,8 @@ const StripeCheckoutButton = () => {
       description={`Your total is $${total.toFixed(2)}`}
       amount={totalForStripe}
       panelLabel="Pay Now"
-      token={({id}) => makePost({token: id})}
-      // token={({ id }) => doRequest({ token: id })}
+      // token={({id}) => makePost({token: id})}
+      token={({ id }) => doRequest({ token: id })}
       stripeKey={publishableKey}
     />
   );

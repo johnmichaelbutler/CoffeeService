@@ -9,14 +9,7 @@ const INITIAL_STATE = {
 const orderReducer = (state = INITIAL_STATE, action) => {
   switch(action.type) {
     case HYDRATE:
-      const nextState = {
-        ...state,
-        ...action.payload
-      };
-      if(state.order_id) {
-        nextState.order_id = state.order_id
-      }
-      return nextState;
+      return {...state, ...action.payload};
     case OrderActionTypes.UPDATE_ORDER_ID:
       return {
         ...state,
@@ -27,6 +20,12 @@ const orderReducer = (state = INITIAL_STATE, action) => {
         ...state,
         active_order: !state.active_order
       }
+    case OrderActionTypes.ORDER_COMPLETED:
+      return {
+        ...state,
+        active_order: false,
+        order_id: null
+      };
     default:
       return state;
   }
